@@ -98,6 +98,8 @@ set ( DIABLO_SRC
     trigs.cpp
     wave.cpp
     world.cpp
+    
+    log.cpp
 )
 
 if ( MSVC )
@@ -175,6 +177,8 @@ if ( MSVC )
         ../resource.h
         ../structs.h
         ../types.h
+        
+        log.h
     )
     
     #set ( DIABLO_RESOURCES
@@ -199,6 +203,11 @@ link_directories (
 )
 
 add_executable ( diablo ${DIABLO_SRC} )
+
+target_include_directories ( diablo
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 if ( MSVC )
     set_target_properties ( diablo PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS" )

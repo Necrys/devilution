@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include "log.h"
 
 int diablo_cpp_init_value; // weak
 HWND ghMainWnd;
@@ -277,8 +278,9 @@ bool __cdecl diablo_get_not_running()
 	return GetLastError() != ERROR_ALREADY_EXISTS;
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    LOG_DBG("diablo.cpp", "%s()", __FUNCTION__);
+
 	HINSTANCE v4; // esi
 	//int v11; // ecx
 	char Filename[260]; // [esp+8h] [ebp-10Ch]
