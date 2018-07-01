@@ -403,7 +403,7 @@ struct Tile
 	short left;
 	short bottom;
 };
-
+/*
 struct _SNETVERSIONDATA
 {
 	int size;
@@ -412,7 +412,7 @@ struct _SNETVERSIONDATA
 	char *originalarchivefile;
 	char *patcharchivefile;
 };
-
+*/
 struct LightListStruct
 {
 	int _lx;
@@ -1022,7 +1022,7 @@ struct TownerStruct
 	int _tNFrames;
 	char *_tNData; // unsigned char *
 };
-
+/*
 struct _SNETUIDATA
 {
 	int size;
@@ -1081,7 +1081,7 @@ struct _uiheroinfo
 	int hassaved;
 	int spawned;
 };
-
+*/
 struct _HASHENTRY
 {
 	int hashcheck[2];
@@ -1174,7 +1174,7 @@ struct _SNETEVENT
 	void *data;
 	int databytes;
 };
-
+/*
 struct _SNETPLAYERDATA
 {
 	int size;
@@ -1182,7 +1182,7 @@ struct _SNETPLAYERDATA
 	char *playerdescription;
 	int field_C;
 };
-
+*/
 struct _SNETCAPS
 {
 	int size;

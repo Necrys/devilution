@@ -35,7 +35,7 @@
 #include "enums.h"
 #include "structs.h"
 
-#include "DiabloUI/diabloui.h"
+#include "DiabloUIProxy/diabloui.h"
 #include "3rdParty/Storm/Source/storm.h"
 #include "3rdParty/PKWare/pkware.h"
 
