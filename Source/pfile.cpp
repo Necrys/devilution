@@ -1,6 +1,8 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
 
 int pfile_cpp_init_value;
 char hero_names[320];
@@ -325,7 +327,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 			v1 = strrchr(FileName, '\\') + 1;
 			if ( v1 != (char *)1 && OpenFile(FileName, &ReOpenBuff, 0x4000u) != -1 )
 			{
-				if ( !SRegLoadString("Diablo\\Converted", (const char *)v1, 0, NewFileName, 260) )
+				if ( !Storm::SRegLoadString("Diablo\\Converted", (const char *)v1, 0, NewFileName, 260) )
 				{
 					while ( 1 )
 					{
@@ -338,7 +340,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 					}
 					if ( CopyFileA(FileName, NewFileName, 1) )
 					{
-						SRegSaveString("Diablo\\Converted", v1, 0, NewFileName);
+                        Storm::SRegSaveString("Diablo\\Converted", v1, 0, NewFileName);
 						v4 = GetFileAttributesA(NewFileName);
 						if ( v4 != -1 )
 						{
@@ -346,7 +348,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 							SetFileAttributesA(NewFileName, v4);
 						}
 					}
-				}
+                }
 			}
 LABEL_13:
 			++lpSrcStr;

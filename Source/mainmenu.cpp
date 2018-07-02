@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
 
 int mainmenu_cpp_init_value; // weak
 char chr_name_str[16];
@@ -153,6 +154,7 @@ LABEL_16:
 
 int __cdecl mainmenu_single_player()
 {
+    LOG_DBG("mainmenu.cpp", "%s()", __FUNCTION__);
 	gbMaxPlayers = 1;
 	return mainmenu_init_menu(1);
 }
@@ -160,6 +162,7 @@ int __cdecl mainmenu_single_player()
 
 int __fastcall mainmenu_init_menu(int a1)
 {
+    LOG_DBG("mainmenu.cpp", "%s()", __FUNCTION__);
 	int v1; // esi
 	int v3; // esi
 

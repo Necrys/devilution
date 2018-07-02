@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int msgcmd_cpp_init_value; // weak
 ChatCmd sgChat_Cmd;
@@ -60,7 +61,7 @@ void __cdecl msgcmd_send_chat()
 		if ( (unsigned int)(v1 - sgdwMsgCmdTimer) >= 2000 )
 		{
 			sgdwMsgCmdTimer = v1;
-			SNetSendServerChatCommand(v0->command);
+			Storm::SNetSendServerChatCommand(v0->command);
 			msgcmd_delete_server_cmd_W(&sgChat_Cmd, v0);
 		}
 	}

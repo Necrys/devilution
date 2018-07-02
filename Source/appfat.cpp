@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int appfat_terminated = 0; // weak
 char sz_error_buf[256];
@@ -244,10 +245,10 @@ void __cdecl FreeDlg()
 	dx_cleanup();
 	if ( (unsigned char)gbMaxPlayers > 1u )
 	{
-		if ( SNetLeaveGame(3) )
+		if ( Storm::SNetLeaveGame(3) )
 			Sleep(2000u);
 	}
-	SNetDestroy();
+	Storm::SNetDestroy();
 	ShowCursor(1);
 }
 // 4B7A34: using guessed type int terminating;
@@ -261,7 +262,8 @@ void DrawDlg(char *pszFmt, ...)
 
 	va_start(arglist, pszFmt);
 	wvsprintfA(text, pszFmt, arglist);
-	SDrawMessageBox(text, "Diablo", MB_TASKMODAL|MB_ICONEXCLAMATION);
+    MessageBoxA(nullptr, text, "Diablo", MB_TASKMODAL | MB_ICONEXCLAMATION);
+	Storm::SDrawMessageBox(text, "Diablo", MB_TASKMODAL|MB_ICONEXCLAMATION);
 }
 
 void __fastcall DDErrDlg(int error_code, int log_line_nr, char *log_file_path)

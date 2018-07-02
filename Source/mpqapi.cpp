@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int mpqapi_cpp_init_value; // weak
 int sgdwMpqOffset; // idb
@@ -85,7 +86,7 @@ bool __fastcall mpqapi_reg_load_modification_time(char *dst, int size)
 	v2 = size;
 	v3 = dst;
 	memset(dst, 0, size);
-	if ( !SRegLoadData("Diablo", "Video Player ", 0, (unsigned char *)v3, v2, (unsigned long *)&nbytes_read) || nbytes_read != v2 )
+	if ( !Storm::SRegLoadData("Diablo", "Video Player ", 0, (unsigned char *)v3, v2, (unsigned long *)&nbytes_read) || nbytes_read != v2 )
 		return 0;
 	if ( v2 >= 8 )
 	{
@@ -144,7 +145,7 @@ bool __fastcall mpqapi_reg_store_modification_time(char *pbData, int dwLen)
 		}
 		while ( v5 );
 	}
-	return SRegSaveData("Diablo", "Video Player ", 0, (unsigned char *)v3, v2);
+    return Storm::SRegSaveData("Diablo", "Video Player ", 0, (unsigned char *)v3, v2);
 }
 
 void __fastcall mpqapi_remove_hash_entry(char *pszName)

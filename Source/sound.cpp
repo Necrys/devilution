@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 float sound_cpp_init_value;
 IDirectSoundBuffer *DSBs[8];
@@ -299,7 +300,7 @@ void __fastcall snd_init(HWND hWnd)
 		sglpDS = 0;
 	if ( sglpDS && !sglpDS->SetCooperativeLevel(hWnd, DSSCL_EXCLUSIVE) )
 		sound_create_primary_buffer(0);
-	SVidInitialize(sglpDS);
+	Storm::SVidInitialize(sglpDS);
 	SFileDdaInitialize(sglpDS);
 	gbSndInited = sglpDS != 0;
 }
@@ -316,7 +317,7 @@ void __fastcall sound_load_volume(char *value_name, int *value)
 	v2 = value;
 	valuea = *value;
 	//_LOBYTE(v3) = SRegLoadValue("Diablo", value_name, 0, &valuea);
-	if ( SRegLoadValue("Diablo", value_name, 0, &valuea) )
+	if ( Storm::SRegLoadValue("Diablo", value_name, 0, &valuea) )
 		v4 = valuea;
 	else
 		v4 = 0;
@@ -405,7 +406,7 @@ int __fastcall sound_DirectSoundCreate(GUID *guid, IDirectSound **DS, int always
 void __cdecl sound_cleanup()
 {
 	snd_update(1);
-	SVidDestroy();
+	Storm::SVidDestroy();
 	SFileDdaDestroy();
 	if ( sglpDS )
 	{
@@ -422,7 +423,7 @@ void __cdecl sound_cleanup()
 
 void __fastcall sound_store_volume(char *key, int value)
 {
-	SRegSaveValue("Diablo", key, 0, value);
+	Storm::SRegSaveValue("Diablo", key, 0, value);
 }
 
 void __cdecl music_stop()

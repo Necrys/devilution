@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int movie_cpp_init_value; // weak
 char movie_playing; // weak
@@ -38,7 +39,7 @@ void __fastcall play_movie(char *pszMovie, bool user_can_close)
 		sound_disable_music(1);
 		sfx_stop();
 		effects_play_sound("Sfx\\Misc\\blank.wav");
-		SVidPlayBegin(v2, 0, 0, 0, 0, loop_movie != 0 ? 0x100C0808 : 0x10280808, &video_stream);
+		Storm::SVidPlayBegin(v2, 0, 0, 0, 0, loop_movie != 0 ? 0x100C0808 : 0x10280808, &video_stream);
 		if ( video_stream )
 		{
 			do
@@ -54,12 +55,12 @@ void __fastcall play_movie(char *pszMovie, bool user_can_close)
 					}
 				}
 				//_LOBYTE(v4) = SVidPlayContinue();
-				if ( !SVidPlayContinue() )
+				if ( !Storm::SVidPlayContinue() )
 					break;
 			}
 			while ( video_stream );
 			if ( video_stream )
-				SVidPlayEnd(video_stream);
+				Storm::SVidPlayEnd(video_stream);
 		}
 		SetWindowProc(saveProc);
 		sound_disable_music(0);

@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int sgdwOwnerWait; // weak
 int msg_cpp_init_value; // weak
@@ -151,7 +152,7 @@ int __cdecl msg_wait_for_turns()
 	{
 		nthread_send_and_recv_turn(0, 0);
 		//_LOBYTE(v0) = SNetGetOwnerTurnsWaiting(&turns);
-		if ( !SNetGetOwnerTurnsWaiting(&turns) && SErrGetLastError() == STORM_ERROR_NOT_IN_GAME )
+		if ( !Storm::SNetGetOwnerTurnsWaiting(&turns) && SErrGetLastError() == STORM_ERROR_NOT_IN_GAME )
 			return 100;
 		if ( GetTickCount() - sgdwOwnerWait <= 2000 && turns < (unsigned int)gdwTurnsInTransit )
 			return 0;
@@ -1534,7 +1535,7 @@ int __fastcall ParseCmd(int pnum, TCmd *pCmd)
 		default:
 			if ( v5 < CMD_DLEVEL_0 || v5 > CMD_DLEVEL_END )
 			{
-				SNetDropPlayer(pnum, 0x40000006);
+				Storm::SNetDropPlayer(pnum, 0x40000006);
 				return 0;
 			}
 			v7 = v3;

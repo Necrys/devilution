@@ -2,6 +2,9 @@
 
 #include "../types.h"
 
+#include <log.h>
+#include <stormstub.h>
+
 PALETTEENTRY logical_palette[256];
 int palette_cpp_init_value; // weak
 PALETTEENTRY system_palette[256];
@@ -28,8 +31,8 @@ struct palette_cpp_init
 
 void __cdecl palette_save_gamme()
 {
-	SRegSaveValue("Diablo", "Gamma Correction", 0, gamma_correction);
-	SRegSaveValue("Diablo", "Color Cycling", 0, color_cycling_enabled);
+	Storm::SRegSaveValue("Diablo", "Gamma Correction", 0, gamma_correction);
+    Storm::SRegSaveValue("Diablo", "Color Cycling", 0, color_cycling_enabled);
 }
 
 void __cdecl palette_init()
@@ -54,7 +57,7 @@ void __cdecl palette_load_gamma()
 	int value; // [esp+8h] [ebp-4h]
 
 	value = gamma_correction;
-	if ( !SRegLoadValue("Diablo", "Gamma Correction", 0, &value) )
+	if ( !Storm::SRegLoadValue("Diablo", "Gamma Correction", 0, &value) )
 		value = 100;
 	if ( value >= 30 )
 	{
@@ -66,7 +69,7 @@ void __cdecl palette_load_gamma()
 		value = 30;
 	}
 	gamma_correction = value - value % 5;
-	if ( SRegLoadValue("Diablo", "Color Cycling", 0, &value) )
+	if ( Storm::SRegLoadValue("Diablo", "Color Cycling", 0, &value) )
 		v3 = value;
 	else
 		v3 = 1;
@@ -143,7 +146,7 @@ void __cdecl ResetPal()
 	  || lpDDSPrimary->IsLost() != DDERR_SURFACELOST
 	  || !lpDDSPrimary->Restore() )
 	{
-		SDrawRealizePalette();
+		Storm::SDrawRealizePalette();
 	}
 }
 
@@ -173,7 +176,7 @@ void __cdecl palette_update()
 			v0 = gdwPalEntries;
 			v1 = 2 * (128 - gdwPalEntries);
 		}
-		SDrawUpdatePalette(v0, v1, &system_palette[v0], 0);
+		Storm::SDrawUpdatePalette(v0, v1, &system_palette[v0], 0);
 	}
 }
 // 484364: using guessed type int fullscreen;

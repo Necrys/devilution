@@ -1,6 +1,8 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
 
 _SNETVERSIONDATA fileinfo;
 int init_cpp_init_value; // weak
@@ -333,7 +335,7 @@ void *__fastcall init_test_access(char *mpq_path, char *mpq_name, char *reg_loc,
 	v15[0] = 0;
 	if ( reg_loc )
 	{
-		if ( SRegLoadString("Archives", (const char *)reg_loc, 0, v15, 260) )
+		if ( Storm::SRegLoadString("Archives", (const char *)reg_loc, 0, v15, 260) )
 		{
 			init_strip_trailing_slash(v15);
 			strcpy(v5, v15);
@@ -447,11 +449,12 @@ LRESULT __stdcall init_palette(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 		{
 			if ( Msg == WM_QUERYNEWPALETTE )
 			{
-				SDrawRealizePalette();
+				Storm::SDrawRealizePalette();
 				return 1;
 			}
-			if ( Msg == WM_PALETTECHANGED && (HWND)wParam != hWnd )
-				SDrawRealizePalette();
+            if (Msg == WM_PALETTECHANGED && (HWND)wParam != hWnd) {
+                Storm::SDrawRealizePalette();
+            }
 		}
 	}
 	else

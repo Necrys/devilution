@@ -204,6 +204,8 @@ target_include_directories ( diablo
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${COMMON_LIB_INCLUDE}
+    ${STORMSTUB_LIB_INCLUDE}
+    ${STORM_LIB_INCLUDE}
 )
 
 if ( MSVC )
@@ -223,6 +225,7 @@ target_link_libraries ( diablo
     PRIVATE ${DIABLOUI_LIB}
     PRIVATE ${PKWARE_LIB}
     PRIVATE common
+    PRIVATE stormstub
     PRIVATE gdi32
     PRIVATE version
 )

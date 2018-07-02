@@ -1,6 +1,8 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
 
 char gbSomebodyWonGameKludge; // weak
 char pkdata_6761C0[4100];
@@ -103,7 +105,7 @@ void __fastcall multi_send_packet(void *packet, int dwSize)
 	NetRecvPlrData(&pkt);
 	pkt.hdr.wLen = v3 + 19;
 	memcpy(pkt.body, v2, v3);
-	if ( !SNetSendMessage(myplr, &pkt.hdr, (unsigned short)pkt.hdr.wLen) )
+	if ( !Storm::SNetSendMessage(myplr, (char*)&pkt.hdr, (unsigned short)pkt.hdr.wLen) )
 		nthread_terminate_game("SNetSendMessage0");
 }
 
@@ -152,7 +154,7 @@ void __fastcall NetSendHiPri(unsigned char *pbMsg, unsigned char bLen)
 		size = v7;
 		v8 = gdwNormalMsgSize - v7;
 		pkt.hdr.wLen = v8;
-		if ( !SNetSendMessage(-2, &pkt.hdr, v8) )
+		if ( !Storm::SNetSendMessage(-2, (char*)&pkt.hdr, v8) )
 			nthread_terminate_game("SNetSendMessage");
 	}
 }
@@ -210,7 +212,7 @@ void __fastcall multi_send_msg_packet(int a1, unsigned char *a2, unsigned char l
 	{
 		if ( v4 & v8 )
 		{
-			if ( !SNetSendMessage(v5, &pkt.hdr, len + 19) && SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
+			if ( !Storm::SNetSendMessage(v5, (char*)&pkt.hdr, len + 19) && SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
 				break;
 		}
 		++v5;
@@ -516,7 +518,7 @@ void __cdecl multi_check_drop_player()
 		if ( !(v1 & 0x40000) )
 		{
 			if ( v1 & 0x10000 )
-				SNetDropPlayer(v0, 0x40000006);
+				Storm::SNetDropPlayer(v0, 0x40000006);
 		}
 		++v0;
 	}
@@ -548,7 +550,7 @@ void __cdecl multi_process_network_packets()
 	multi_clear_left_tbl();
 	multi_process_tmsgs();
 	//_LOBYTE(v0) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
-	if ( SNetReceiveMessage((int *)arglist, (char **)&pkt, &len) )
+	if ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) )
 	{
 		do
 		{
@@ -621,9 +623,9 @@ void __cdecl multi_process_network_packets()
 			}
 			//_LOBYTE(v15) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
 		}
-		while ( SNetReceiveMessage((int *)arglist, (char **)&pkt, &len) );
+		while ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) );
 	}
-	if ( SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
+	if ( Storm::SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
 		nthread_terminate_game("SNetReceiveMsg");
 }
 // 676194: using guessed type char gbBufferMsgs;
@@ -692,7 +694,7 @@ void __fastcall multi_send_zero_packet(int pnum, char a2, void *pbSrc, int dwLen
 		*(_WORD *)&pkt.body[3] = dwBody;
 		memcpy(&pkt.body[5], pbSrc, dwBody);
 		pkt.hdr.wLen = *(_WORD *)&pkt.body[3] + 24;
-		if ( !SNetSendMessage(pnuma, &pkt.hdr, *(unsigned short *)&pkt.body[3] + 24) )
+		if ( !Storm::SNetSendMessage(pnuma, (char*)&pkt.hdr, *(unsigned short *)&pkt.body[3] + 24) )
 		{
 			nthread_terminate_game("SNetSendMessage2");
 			return;
@@ -713,7 +715,7 @@ void __cdecl NetClose()
 		dthread_cleanup();
 		tmsg_cleanup();
 		multi_event_handler(0);
-		SNetLeaveGame(3);
+		Storm::SNetLeaveGame(3);
 		msgcmd_cmd_cleanup();
 		if ( (unsigned char)gbMaxPlayers > 1u )
 			Sleep(2000);
@@ -788,6 +790,7 @@ void __stdcall multi_handle_events(_SNETEVENT *pEvt)
 
 int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 {
+    LOG_DBG("multi.cpp", "%s(bSinglePlayer: %d)", __FUNCTION__, bSinglePlayer);
 	int v2; // ebx
 	int v4; // eax
 	//int v5; // ecx
@@ -826,7 +829,7 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		a2.size = 16;
 		memset(&UiData, 0, 0x50u);
 		UiData.size = 80;
-		UiData.parentwindow = SDrawGetFrameWindow(0);
+        UiData.parentwindow = Storm::SDrawGetFrameWindow(0);
 		UiData.artcallback = UiArtCallback;
 		UiData.createcallback = UiCreateGameCallback;
 		UiData.drawdesccallback = UiDrawDescCallback;
@@ -994,13 +997,18 @@ void __cdecl SetupLocalCoords()
 
 int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA *user_info, _SNETUIDATA *ui_info)
 {
+    LOG_DBG("multi.cpp", "%s()", __FUNCTION__);
+
 	//int v3; // eax
 	int result; // eax
 	//int v5; // eax
 	char *v6; // eax
 
 	//_LOBYTE(v3) = SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo);
-	if ( SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo) )
+
+    int res = SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo);
+    LOG_DBG("multi.cpp", "%s() call SNetInitializeProvider, result: %d", __FUNCTION__, res);
+	if (res)
 	{
 		ui_info = 0;
 		//_LOBYTE(v5) = SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info);
@@ -1015,7 +1023,8 @@ int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA 
 	}
 	else
 	{
-		SErrGetLastError();
+		DWORD dwErr = SErrGetLastError();
+        LOG_DBG("multi.cpp", "%s() SErrGetLastError: 0x%.8x", __FUNCTION__, dwErr);
 		result = 0;
 	}
 	return result;

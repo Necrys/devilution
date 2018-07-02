@@ -2,6 +2,8 @@
 
 #include "../types.h"
 
+#include <log.h>
+
 int light_table_index; // weak
 int screen_y_times_768[1024];
 int scrollrt_cpp_init_value; // weak
@@ -3140,6 +3142,7 @@ void __fastcall DrawMain(int dwHgt, int draw_desc, int draw_hp, int draw_mana, i
 	a4 = dwHgt;
 	if ( window_activated && lpDDSPrimary )
 	{
+        LOG_DBG("scrollrt.cpp", "%s(), lpDDSPrimary->IsLost()", __FUNCTION__);
 		if ( lpDDSPrimary->IsLost() == DDERR_SURFACELOST )
 		{
 			if ( lpDDSPrimary->Restore() )
@@ -3155,6 +3158,7 @@ LABEL_8:
 			while ( 1 )
 			{
 				DDS_desc.dwSize = 108;
+                LOG_DBG("scrollrt.cpp", "%s(), lock primary buffer", __FUNCTION__);
 				v8 = lpDDSPrimary->Lock(NULL, &DDS_desc, DDLOCK_WRITEONLY|DDLOCK_WAIT, NULL);
 				if ( !v8 )
 					break;
@@ -3214,6 +3218,7 @@ LABEL_17:
 		}
 		if ( !lpDDSBackBuf )
 		{
+            LOG_DBG("scrollrt.cpp", "%s(), unlock primary buffer", __FUNCTION__);
 			v9 = lpDDSPrimary->Unlock(NULL);
 			if ( v9 != DDERR_SURFACELOST )
 			{
