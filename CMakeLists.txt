@@ -24,6 +24,7 @@ if ( MSVC )
 endif ()
 
 add_subdirectory ( common )
+add_subdirectory ( DDrawProxy )
 add_subdirectory ( 3rdParty/Storm/Source )
 add_subdirectory ( DiabloUI )
 add_subdirectory ( 3rdParty/PKWare )
