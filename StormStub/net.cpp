@@ -21,7 +21,7 @@ struct NetPacketT {
     }
 
     bool isFree() {
-        LOG_DBG("[packet:0x%p] databytes: %d", this, databytes);
+        //LOG_DBG("[packet:0x%p] databytes: %d", this, databytes);
         return databytes == (SizeT)(SizeT(0) - 1);
     }
 };
@@ -37,7 +37,7 @@ void initNetEmulation(const size_t packetPoolSize) {
 }
 
 NetPacket* getFreePacket() {
-    LOG_DBG("packetPoolSize: %d", g_packetPool.size());
+    //LOG_DBG("packetPoolSize: %d", g_packetPool.size());
     for (auto& p : g_packetPool) {
         if (p.isFree()) {
             return &p;
@@ -162,4 +162,211 @@ namespace Storm {
         return result;
         */
     }
+
+    BOOL SNetSetBasePlayer(unsigned int a1) {
+        LOG_DBG("a1: %u", a1);
+        return TRUE;
+    }
+
+    BOOL SNetGetGameInfo(int type, char *src, unsigned int length, size_t *byteswritten) {
+        strcpy(src, "local");
+        *byteswritten = 6;
+        return TRUE;
+        /*
+        BOOL result = ::SNetGetGameInfo(type, src, length, byteswritten);
+        LOG_DBG("type: %d, src: %s, length: %u, byteswritten: %d", type, src, length, *byteswritten);
+        return result;
+        */
+    }
+
+    void dumpNetProgramData(const _SNETPROGRAMDATA* program) {
+        LOG_DBG("program (0x%p):\n"
+            "size: %d\n"
+            "programname: %s\n"
+            "programdescription: %s\n"
+            "programid: %d\n"
+            "versionid: %d\n"
+            "reserved1: %d\n"
+            "maxplayers: %d\n"
+            "multi_seed: %d\n"
+            "initdata: 0x%p\n"
+            "initdatabytes: %d\n"
+            "reserved2: 0x%p\n"
+            "optcategorybits: %d\n"
+            "reserved3: %d\n"
+            "reserved4: %d\n"
+            "languageid: %d",
+            program, program->size, program->programname, program->programdescription,
+            program->programid, program->versionid, program->reserved1, program->maxplayers,
+            program->multi_seed, program->initdata, program->initdatabytes, program->reserved2,
+            program->optcategorybits, program->reserved3, program->reserved4, program->languageid);
+    }
+
+    void dumpNetPlayerData(const _SNETPLAYERDATA* player) {
+        LOG_DBG("player (0x%p):\n"
+            "size: %d\n"
+            "playername: %s\n"
+            "playerdescription: %s\n"
+            "field_C: %d",
+            player, player->size, player->playername, player->playerdescription, player->field_C);
+    }
+
+    void dumpNetUIData(const _SNETUIDATA* ui) {
+        LOG_DBG("ui (0x%p):\n"
+            "size: %d\n"
+            "uiflags: %d\n"
+            "parentwindow: 0x%p\n"
+            "profilegetstring: %d",
+            ui, ui->size, ui->uiflags, ui->parentwindow, ui->profilegetstring);
+    }
+
+    void dumpNetVersionData(const _SNETVERSIONDATA* version) {
+        LOG_DBG("version: (0x%p):\n"
+            "size: %d\n"
+            "versionstring: %s\n"
+            "executablefile: %s\n"
+            "originalarchivefile: %s\n"
+            "patcharchivefile: %s",
+            version, version->size, version->versionstring, version->executablefile,
+            version->originalarchivefile, version->patcharchivefile);
+    }
+
+    int SNetInitializeProvider(unsigned long a1, _SNETPROGRAMDATA* program, _SNETPLAYERDATA* player, _SNETUIDATA* ui, _SNETVERSIONDATA* version) {
+        LOG_DBG("");
+        dumpNetProgramData(program);
+        dumpNetPlayerData(player);
+        dumpNetUIData(ui);
+        dumpNetVersionData(version);
+
+        return ::SNetInitializeProvider(a1, program, player, ui, version);
+        return 1;
+    }
+
+    BOOL SNetCreateGame(const char *pszGameName,
+                        const char *pszGamePassword,
+                        const char *pszGameStatString,
+                        DWORD dwGameType,
+                        char *GameTemplateData,
+                        int GameTemplateSize,
+                        int playerCount,
+                        char *creatorName,
+                        char *a11,
+                        int *playerID) {
+        LOG_DBG("pszGameName: %s, pszGamePassword: %s, pszGameStatString: %s, dwGameType: %ul, GameTemplateData: %s, "
+            "GameTemplateSize: %d, playerCount: %d, creatorName: %s, a11: %s, playerID: %d",
+            pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
+            playerCount, creatorName, a11, *playerID);
+        //return ::SNetCreateGame(pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
+        //    playerCount, creatorName, a11, playerID);
+        return TRUE;
+    }
+
+    void dumpNetCaps(const _SNETCAPS* caps) {
+        LOG_DBG("caps (0x%p):\n"
+            "size: %d\n"
+            "flags: %d\n"
+            "maxmessagesize: %d\n"
+            "maxqueuesize: %d\n"
+            "maxplayers: %d\n"
+            "bytessec: %d\n"
+            "latencyms: %d\n"
+            "defaultturnssec: %d\n"
+            "defaultturnsintransit: %d",
+            caps, caps->size, caps->flags, caps->maxmessagesize, caps->maxqueuesize, caps->maxplayers,
+            caps->bytessec, caps->latencyms, caps->defaultturnssec, caps->defaultturnsintransit);
+    }
+
+    int SNetGetProviderCaps(_SNETCAPS* pNetCaps) {
+        LOG_DBG("");
+        
+        pNetCaps->maxmessagesize = 496;
+        pNetCaps->maxqueuesize = 16;
+        pNetCaps->maxplayers = 1;
+        pNetCaps->bytessec = 3145728;
+        pNetCaps->latencyms = 0;
+        pNetCaps->defaultturnssec = 30;
+        pNetCaps->defaultturnsintransit = 0;
+
+        return 1;
+        
+        /*    
+        int result = ::SNetGetProviderCaps(pNetCaps);
+        LOG_DBG("result: %d", result);
+        dumpNetCaps(pNetCaps);
+        return result;
+        */
+    }
+
+    BOOL SNetGetTurnsInTransit(int *turns) {
+        LOG_DBG("");
+        *turns = 0;
+        return TRUE;
+
+        /*
+        BOOL result = ::SNetGetTurnsInTransit(turns);
+        LOG_DBG("turns: %d, result: %d", *turns, result);
+        return result;
+        */
+    }
+
+    BOOL SNetSendTurn(char* data, size_t databytes) {
+        return TRUE;
+
+        /*
+        LOG_DBG("data:\n%s\n", dump(data, databytes));
+        BOOL result = ::SNetSendTurn(data, databytes);
+        LOG_DBG("result: %d", result);
+        return result;
+        */
+    }
+
+    BOOL SNetReceiveTurns(int a1, int arraysize, unsigned char **arraydata, unsigned int *arraydatabytes, DWORD *arrayplayerstatus) {
+        static unsigned long turncount = 0;
+        ++turncount;
+        *arraydata = (unsigned char*)&turncount;
+        return TRUE;
+        /*
+        LOG_DBG("");
+        int* pPlayerStatus = reinterpret_cast<int*>(arrayplayerstatus);
+        int* pArrayData = reinterpret_cast<int*>(*arraydata);
+
+        if (pArrayData) {
+            LOG_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
+                a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
+                arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
+                pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
+            );
+        }
+        BOOL result = ::SNetReceiveTurns(a1, arraysize, arraydata, arraydatabytes, arrayplayerstatus);
+
+        pArrayData = reinterpret_cast<int*>(*arraydata);
+        LOG_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
+            a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
+            arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
+            pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
+        );
+        return result;
+        */
+    }
+
+    BOOL SNetPerformUpgrade(DWORD *upgradestatus) {
+        /*
+        BOOL result = ::SNetPerformUpgrade(upgradestatus);
+        LOG_DBG("upgradestatus: %ul, result: %d", *upgradestatus, result);
+        return result;
+        */
+        LOG_DBG("");
+        return TRUE;
+    }
+
+    void* __stdcall SNetUnregisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
+        LOG_DBG("");
+        return (void*)1;
+    }
+
+    void* __stdcall SNetRegisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
+        LOG_DBG("");
+        return (void*)1;
+    }
+
 }

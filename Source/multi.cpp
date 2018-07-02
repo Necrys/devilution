@@ -549,7 +549,6 @@ void __cdecl multi_process_network_packets()
 
 	multi_clear_left_tbl();
 	multi_process_tmsgs();
-	//_LOBYTE(v0) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
 	if ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) )
 	{
 		do
@@ -621,7 +620,6 @@ void __cdecl multi_process_network_packets()
 				}
 				multi_handle_all_packets(*(int *)arglist, (TPkt *)&v2[1], len - 19);
 			}
-			//_LOBYTE(v15) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
 		}
 		while ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) );
 	}
@@ -733,9 +731,9 @@ char __fastcall multi_event_handler(int a1)
 	char *v5; // eax
 
 	v1 = a1;
-	v2 = SNetRegisterEventHandler;
+	v2 = Storm::SNetRegisterEventHandler;
 	if ( !a1 )
-		v2 = SNetUnregisterEventHandler;
+		v2 = Storm::SNetUnregisterEventHandler;
 	v3 = 0;
 	do
 	{
@@ -850,7 +848,7 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		memset(sgbSendDeltaTbl, 0, 4u);
 		memset(plr, 0, 0x15360u);
 		memset(sgwPackPlrOffsetTbl, 0, 8u);
-		SNetSetBasePlayer(0);
+        Storm::SNetSetBasePlayer(0);
 		if ( v14 )
 			v4 = multi_init_single(&ProgramData, &a2, &UiData);
 		else
@@ -893,11 +891,9 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		++v2;
 	}
 	while ( v2 < 17 );
-	//_LOBYTE(v9) = SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, len);
-	if ( !SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, &len) )
+	if ( !Storm::SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, &len) )
 		nthread_terminate_game("SNetGetGameInfo1");
-	//_LOBYTE(v10) = SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, len);
-	if ( !SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, &len) )
+	if ( !Storm::SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, &len) )
 		nthread_terminate_game("SNetGetGameInfo2");
 	return 1;
 }
@@ -1004,15 +1000,10 @@ int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA 
 	//int v5; // eax
 	char *v6; // eax
 
-	//_LOBYTE(v3) = SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo);
-
-    int res = SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo);
-    LOG_DBG("multi.cpp", "%s() call SNetInitializeProvider, result: %d", __FUNCTION__, res);
-	if (res)
+	if (Storm::SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo))
 	{
 		ui_info = 0;
-		//_LOBYTE(v5) = SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info);
-		if ( !SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info) )
+		if ( !Storm::SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info) )
 		{
 			v6 = GetLastErr();
 			TermMsg("SNetCreateGame1:\n%s", v6);
@@ -1078,7 +1069,7 @@ int __fastcall multi_upgrade(int *a1)
 	int status; // [esp+4h] [ebp-4h]
 
 	v1 = a1;
-	SNetPerformUpgrade((unsigned long *)&status);
+	Storm::SNetPerformUpgrade((unsigned long *)&status);
 	result = 1;
 	if ( status && status != 1 )
 	{

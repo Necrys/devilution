@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int nthread_cpp_init_value; // weak
 char byte_679704; // weak
@@ -93,7 +94,7 @@ int __fastcall nthread_send_and_recv_turn(int cur_turn, int turn_delta)
 
 	v2 = turn_delta;
 	v3 = cur_turn;
-	if ( SNetGetTurnsInTransit(&turns) )
+	if ( Storm::SNetGetTurnsInTransit(&turns) )
 	{
 		if ( turns >= (unsigned int)gdwTurnsInTransit )
 			return v3;
@@ -103,7 +104,7 @@ int __fastcall nthread_send_and_recv_turn(int cur_turn, int turn_delta)
 			v6 = dword_679754 | v3 & 0x7FFFFFFF;
 			dword_679754 = 0;
 			turn = v6;
-			if ( !SNetSendTurn((char *)&turn, 4) )
+			if ( !Storm::SNetSendTurn((char *)&turn, 4) )
 				break;
 			v3 += v2;
 			if ( v3 >= 0x7FFFFFFF )
@@ -139,7 +140,7 @@ int __fastcall nthread_recv_turns(int *pfSendAsync)
 	sgbPacketCountdown = byte_679704;
 	if ( !v2 )
 		goto LABEL_11;
-	if ( SNetReceiveTurns(0, 4, (char **)glpMsgTbl, (unsigned int *)gdwMsgLenTbl, (unsigned long *)player_state) )
+	if ( Storm::SNetReceiveTurns(0, 4, (unsigned char **)glpMsgTbl, (unsigned int *)gdwMsgLenTbl, (unsigned long *)player_state) )
 	{
 		if ( !byte_679758 )
 		{
@@ -191,7 +192,7 @@ void __fastcall nthread_start(bool set_turn_upper_bit)
 	else
 		dword_679754 = 0;
 	caps.size = 36;
-	if ( !SNetGetProviderCaps(&caps) )
+	if ( !Storm::SNetGetProviderCaps(&caps) )
 	{
 		v3 = GetLastErr();
 		TermMsg("SNetGetProviderCaps:\n%s", v3);

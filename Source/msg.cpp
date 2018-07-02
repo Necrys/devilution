@@ -151,7 +151,6 @@ int __cdecl msg_wait_for_turns()
 	if ( !sgbDeltaChunks )
 	{
 		nthread_send_and_recv_turn(0, 0);
-		//_LOBYTE(v0) = SNetGetOwnerTurnsWaiting(&turns);
 		if ( !Storm::SNetGetOwnerTurnsWaiting(&turns) && SErrGetLastError() == STORM_ERROR_NOT_IN_GAME )
 			return 100;
 		if ( GetTickCount() - sgdwOwnerWait <= 2000 && turns < (unsigned int)gdwTurnsInTransit )
