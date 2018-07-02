@@ -23,11 +23,13 @@ if ( MSVC )
     endforeach ()
 endif ()
 
+add_subdirectory ( common )
 add_subdirectory ( 3rdParty/Storm/Source )
 add_subdirectory ( DiabloUI )
 add_subdirectory ( 3rdParty/PKWare )
 add_subdirectory ( Source )
 
+add_dependencies ( diablo common )
 add_dependencies ( diablo Storm )
 add_dependencies ( diablo diabloui )
 add_dependencies ( diablo PKWare )

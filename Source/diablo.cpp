@@ -1,7 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
-#include "log.h"
+#include <log.h>
 
 int diablo_cpp_init_value; // weak
 HWND ghMainWnd;
@@ -279,7 +279,7 @@ bool __cdecl diablo_get_not_running()
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    LOG_DBG("diablo.cpp", "%s()", __FUNCTION__);
+    LOG_DBG("");
 
 	HINSTANCE v4; // esi
 	//int v11; // ecx

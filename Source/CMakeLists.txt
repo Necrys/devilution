@@ -98,8 +98,6 @@ set ( DIABLO_SRC
     trigs.cpp
     wave.cpp
     world.cpp
-    
-    log.cpp
 )
 
 if ( MSVC )
@@ -177,8 +175,6 @@ if ( MSVC )
         ../resource.h
         ../structs.h
         ../types.h
-        
-        log.h
     )
     
     #set ( DIABLO_RESOURCES
@@ -207,6 +203,7 @@ add_executable ( diablo ${DIABLO_SRC} )
 target_include_directories ( diablo
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${COMMON_LIB_INCLUDE}
 )
 
 if ( MSVC )
@@ -225,6 +222,7 @@ target_link_libraries ( diablo
     PRIVATE ${STORM_LIB}
     PRIVATE ${DIABLOUI_LIB}
     PRIVATE ${PKWARE_LIB}
+    PRIVATE common
     PRIVATE gdi32
     PRIVATE version
 )

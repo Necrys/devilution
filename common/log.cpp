@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstdint>
+#include <thread>
+#include <sstream>
 
 #if defined ( __GCC__ )
 #include <sys/time.h>
@@ -40,18 +42,29 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp) {
 }
 #endif
 
-Log::Log() {
-    m_stream = fopen("devilution.log", "wt");
+Log::Log():
+    m_stream(nullptr) {
 }
 
 Log::~Log() {
-    fflush(m_stream);
-    fclose(m_stream);
+    deinit();
 }
 
 Log& Log::instance() {
     static Log log;
     return log;
+}
+
+void Log::init(const char* name) {
+    deinit();
+    m_stream = fopen(name, "wt");
+}
+
+void Log::deinit() {
+    if (m_stream) {
+        fflush(m_stream);
+        fclose(m_stream);
+    }
 }
 
 void Log::debug(const char* section, const char* fmt, ...) {
@@ -86,6 +99,9 @@ void Log::vprintf(const char* section, const char* level, const char* fmt, va_li
     if (!m_stream)
         return;
 
+    std::stringstream ss;
+    ss << std::this_thread::get_id();
+
     // write timestamp, section and level
     char buffer[30];
     timeval tv;
@@ -93,7 +109,7 @@ void Log::vprintf(const char* section, const char* level, const char* fmt, va_li
     gettimeofday(&tv, NULL);
     curtime = tv.tv_sec;
     strftime(buffer, 30, "%m-%d-%Y %T.", localtime(&curtime));
-    fprintf(m_stream, "%s%03ld | %16.16s | %5.5s | ", buffer, tv.tv_usec / 1000, section, level);
+    fprintf(m_stream, "%s%03ld | %8.8s | %16.16s | %5.5s | ", buffer, tv.tv_usec / 1000, ss.str().c_str(), section, level);
 
     // write entry
     vfprintf(m_stream, fmt, args);
