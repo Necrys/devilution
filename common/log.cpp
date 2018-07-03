@@ -12,16 +12,20 @@
 #include <thread>
 #include <sstream>
 
-#if defined ( __GCC__ )
+#if defined ( UNIX )
 #include <sys/time.h>
 #elif defined ( _MSC_VER )
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#undef WIN32_LEAN_AND_MEAN
 typedef struct timeval {
     long tv_sec;
     long tv_usec;
 } timeval;
+#endif
+
+#if defined ( _WIN32 )
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#undef WIN32_LEAN_AND_MEAN
 
 int gettimeofday(struct timeval * tp, struct timezone * tzp) {
     static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);

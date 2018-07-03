@@ -15,6 +15,10 @@ if ( MINGW )
         #-Wall
         #-Werror
     )
+    
+    set (LIBS
+        libstdc++
+    )
 elseif ( MSVC )
     # TODO: get rid of all warnings listed here. See issue #1
     set ( DIABLO_COMPILE_FLAGS
@@ -184,7 +188,7 @@ if ( MSVC )
     source_group ( "Header Files" FILES ${DIABLO_HEADERS} )
     source_group ( "Source Files" FILES ${DIABLO_SRC} )
     #source_group ( "Resource Files" FILES ${DIABLO_RESOURCES} )
-
+    
     set ( DIABLO_SRC
         ${DIABLO_SRC}
         ${DIABLO_HEADERS}
@@ -225,4 +229,5 @@ target_link_libraries ( diablo
     PRIVATE common
     PRIVATE gdi32
     PRIVATE version
+    PRIVATE ${LIBS}
 )

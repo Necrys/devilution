@@ -41,11 +41,11 @@ private:
 
 #define __FILENAME__ (strrchr(__FILE__, __FILE_PATH_DELIM_CHAR__) ? strrchr(__FILE__, __FILE_PATH_DELIM_CHAR__) + 1 : __FILE__)
 
-#define LOG_ERR(fmt, ...) Log::instance().error(__FILENAME__, __FUNCTION__ "() " fmt, ##__VA_ARGS__)
-#define LOG_WRN(fmt, ...) Log::instance().warn(__FILENAME__, __FUNCTION__ "() " fmt, ##__VA_ARGS__)
-#define LOG_INF(fmt, ...) Log::instance().info(__FILENAME__, __FUNCTION__ "() " fmt, ##__VA_ARGS__)
+#define LOG_ERR(fmt, ...) Log::instance().error(__FILENAME__, "%s() " fmt, __FUNCTION__, ##__VA_ARGS__)
+#define LOG_WRN(fmt, ...) Log::instance().warn(__FILENAME__, "%s() " fmt, __FUNCTION__, ##__VA_ARGS__)
+#define LOG_INF(fmt, ...) Log::instance().info(__FILENAME__, "%s() " fmt, __FUNCTION__, ##__VA_ARGS__)
 #if !defined( NDEBUG )
-#define LOG_DBG(fmt, ...) Log::instance().debug(__FILENAME__, __FUNCTION__ "() " fmt, ##__VA_ARGS__)
+#define LOG_DBG(fmt, ...) Log::instance().debug(__FILENAME__, "%s() " fmt, __FUNCTION__, ##__VA_ARGS__)
 #else
 #define LOG_DBG(fmt, ...)
 #endif
