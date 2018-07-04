@@ -1,4 +1,5 @@
 #include "err.h"
+#include "stormstub.h"
 
 #include <log.h>
 
@@ -6,7 +7,7 @@ static DWORD g_err = 0;
 
 namespace Storm {
     DWORD SErrGetLastError() {
-        LOG_DBG("");
+        SS_DBG("");
         return g_err;
     }
 }

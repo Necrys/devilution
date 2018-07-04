@@ -1,9 +1,13 @@
 #include "net.h"
 #include "err.h"
+#include "stormstub.h"
 
 #include <log.h>
+#include <common_types.h>
 
+#ifdef STORMSTUB_USE_STORM
 #include <storm.h>
+#endif
 
 #include <cassert>
 #include <queue>
@@ -21,7 +25,7 @@ struct NetPacketT {
     }
 
     bool isFree() {
-        //LOG_DBG("[packet:0x%p] databytes: %d", this, databytes);
+        //SS_DBG("[packet:0x%p] databytes: %d", this, databytes);
         return databytes == (SizeT)(SizeT(0) - 1);
     }
 };
@@ -37,7 +41,7 @@ void initNetEmulation(const size_t packetPoolSize) {
 }
 
 NetPacket* getFreePacket() {
-    //LOG_DBG("packetPoolSize: %d", g_packetPool.size());
+    //SS_DBG("packetPoolSize: %d", g_packetPool.size());
     for (auto& p : g_packetPool) {
         if (p.isFree()) {
             return &p;
@@ -51,27 +55,27 @@ NetPacket* getFreePacket() {
 
 namespace Storm {
     BOOL SNetLeaveGame(int type) {
-        LOG_DBG("type: %d", type);
+        SS_DBG("type: %d", type);
         return FALSE;
     }
 
     BOOL SNetDestroy() {
-        LOG_DBG("");
+        SS_DBG("");
         return FALSE;
     }
 
     BOOL SNetGetOwnerTurnsWaiting(int* turns) {
-        LOG_DBG("");
+        SS_DBG("");
         return FALSE;
     }
 
     BOOL SNetDropPlayer(int playerid, DWORD flags) {
-        LOG_DBG("playerid: %d, flags: 0x%x", playerid, flags);
+        SS_DBG("playerid: %d, flags: 0x%x", playerid, flags);
         return FALSE;
     }
 
     int SNetSendServerChatCommand(const char *command) {
-        LOG_DBG("command: \"%s\"", command);
+        SS_DBG("command: \"%s\"", command);
         return 0;
     }
 
@@ -120,9 +124,9 @@ namespace Storm {
         return TRUE;
         /*
         BOOL result = ::SNetSendMessage(playerID, data, databytes);
-        LOG_DBG("playerID: %d, data: 0x%p, size: %u -> %d", playerID, data, databytes, result);
+        SS_DBG("playerID: %d, data: 0x%p, size: %u -> %d", playerID, data, databytes, result);
         if (data && databytes > 0) {
-            LOG_DBG("data:\n%s", dump(data, databytes));
+            SS_DBG("data:\n%s", dump(data, databytes));
         }
         
         return result;
@@ -155,16 +159,16 @@ namespace Storm {
 
         /*
         BOOL result = ::SNetReceiveMessage(senderplayerid, (char**)data, databytes);
-        LOG_DBG("senderplayerid: %d, data: 0x%p, databytes: %u -> %d", *senderplayerid, *data, *databytes, result);
+        SS_DBG("senderplayerid: %d, data: 0x%p, databytes: %u -> %d", *senderplayerid, *data, *databytes, result);
         if (result && *data && *databytes > 0) {
-            LOG_DBG("data:\n%s", dump((char*)*data, *databytes));
+            SS_DBG("data:\n%s", dump((char*)*data, *databytes));
         }
         return result;
         */
     }
 
     BOOL SNetSetBasePlayer(unsigned int a1) {
-        LOG_DBG("a1: %u", a1);
+        SS_DBG("a1: %u", a1);
         return TRUE;
     }
 
@@ -174,13 +178,13 @@ namespace Storm {
         return TRUE;
         /*
         BOOL result = ::SNetGetGameInfo(type, src, length, byteswritten);
-        LOG_DBG("type: %d, src: %s, length: %u, byteswritten: %d", type, src, length, *byteswritten);
+        SS_DBG("type: %d, src: %s, length: %u, byteswritten: %d", type, src, length, *byteswritten);
         return result;
         */
     }
 
     void dumpNetProgramData(const _SNETPROGRAMDATA* program) {
-        LOG_DBG("program (0x%p):\n"
+        SS_DBG("program (0x%p):\n"
             "size: %d\n"
             "programname: %s\n"
             "programdescription: %s\n"
@@ -203,7 +207,7 @@ namespace Storm {
     }
 
     void dumpNetPlayerData(const _SNETPLAYERDATA* player) {
-        LOG_DBG("player (0x%p):\n"
+        SS_DBG("player (0x%p):\n"
             "size: %d\n"
             "playername: %s\n"
             "playerdescription: %s\n"
@@ -212,7 +216,7 @@ namespace Storm {
     }
 
     void dumpNetUIData(const _SNETUIDATA* ui) {
-        LOG_DBG("ui (0x%p):\n"
+        SS_DBG("ui (0x%p):\n"
             "size: %d\n"
             "uiflags: %d\n"
             "parentwindow: 0x%p\n"
@@ -221,7 +225,7 @@ namespace Storm {
     }
 
     void dumpNetVersionData(const _SNETVERSIONDATA* version) {
-        LOG_DBG("version: (0x%p):\n"
+        SS_DBG("version: (0x%p):\n"
             "size: %d\n"
             "versionstring: %s\n"
             "executablefile: %s\n"
@@ -232,7 +236,7 @@ namespace Storm {
     }
 
     int SNetInitializeProvider(unsigned long a1, _SNETPROGRAMDATA* program, _SNETPLAYERDATA* player, _SNETUIDATA* ui, _SNETVERSIONDATA* version) {
-        LOG_DBG("");
+        SS_DBG("");
         dumpNetProgramData(program);
         dumpNetPlayerData(player);
         dumpNetUIData(ui);
@@ -252,7 +256,7 @@ namespace Storm {
                         char *creatorName,
                         char *a11,
                         int *playerID) {
-        LOG_DBG("pszGameName: %s, pszGamePassword: %s, pszGameStatString: %s, dwGameType: %ul, GameTemplateData: %s, "
+        SS_DBG("pszGameName: %s, pszGamePassword: %s, pszGameStatString: %s, dwGameType: %ul, GameTemplateData: %s, "
             "GameTemplateSize: %d, playerCount: %d, creatorName: %s, a11: %s, playerID: %d",
             pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
             playerCount, creatorName, a11, *playerID);
@@ -262,7 +266,7 @@ namespace Storm {
     }
 
     void dumpNetCaps(const _SNETCAPS* caps) {
-        LOG_DBG("caps (0x%p):\n"
+        SS_DBG("caps (0x%p):\n"
             "size: %d\n"
             "flags: %d\n"
             "maxmessagesize: %d\n"
@@ -277,7 +281,7 @@ namespace Storm {
     }
 
     int SNetGetProviderCaps(_SNETCAPS* pNetCaps) {
-        LOG_DBG("");
+        SS_DBG("");
         
         pNetCaps->maxmessagesize = 496;
         pNetCaps->maxqueuesize = 16;
@@ -291,20 +295,20 @@ namespace Storm {
         
         /*    
         int result = ::SNetGetProviderCaps(pNetCaps);
-        LOG_DBG("result: %d", result);
+        SS_DBG("result: %d", result);
         dumpNetCaps(pNetCaps);
         return result;
         */
     }
 
     BOOL SNetGetTurnsInTransit(int *turns) {
-        LOG_DBG("");
+        SS_DBG("");
         *turns = 0;
         return TRUE;
 
         /*
         BOOL result = ::SNetGetTurnsInTransit(turns);
-        LOG_DBG("turns: %d, result: %d", *turns, result);
+        SS_DBG("turns: %d, result: %d", *turns, result);
         return result;
         */
     }
@@ -313,9 +317,9 @@ namespace Storm {
         return TRUE;
 
         /*
-        LOG_DBG("data:\n%s\n", dump(data, databytes));
+        SS_DBG("data:\n%s\n", dump(data, databytes));
         BOOL result = ::SNetSendTurn(data, databytes);
-        LOG_DBG("result: %d", result);
+        SS_DBG("result: %d", result);
         return result;
         */
     }
@@ -326,12 +330,12 @@ namespace Storm {
         *arraydata = (unsigned char*)&turncount;
         return TRUE;
         /*
-        LOG_DBG("");
+        SS_DBG("");
         int* pPlayerStatus = reinterpret_cast<int*>(arrayplayerstatus);
         int* pArrayData = reinterpret_cast<int*>(*arraydata);
 
         if (pArrayData) {
-            LOG_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
+            SS_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
                 a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
                 arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
                 pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
@@ -340,7 +344,7 @@ namespace Storm {
         BOOL result = ::SNetReceiveTurns(a1, arraysize, arraydata, arraydatabytes, arrayplayerstatus);
 
         pArrayData = reinterpret_cast<int*>(*arraydata);
-        LOG_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
+        SS_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
             a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
             arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
             pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
@@ -352,20 +356,20 @@ namespace Storm {
     BOOL SNetPerformUpgrade(DWORD *upgradestatus) {
         /*
         BOOL result = ::SNetPerformUpgrade(upgradestatus);
-        LOG_DBG("upgradestatus: %ul, result: %d", *upgradestatus, result);
+        SS_DBG("upgradestatus: %ul, result: %d", *upgradestatus, result);
         return result;
         */
-        LOG_DBG("");
+        SS_DBG("");
         return TRUE;
     }
 
     void* __stdcall SNetUnregisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
-        LOG_DBG("");
+        SS_DBG("");
         return (void*)1;
     }
 
     void* __stdcall SNetRegisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
-        LOG_DBG("");
+        SS_DBG("");
         return (void*)1;
     }
 

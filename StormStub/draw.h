@@ -1,10 +1,14 @@
 #pragma once
 
-#include <storm.h>
+#include "types.h"
+
+struct IDirectDraw;
+struct IDirectDrawSurface;
+struct IDirectDrawPalette;
 
 namespace Storm {
-    BOOL SDrawManualInitialize(HWND hWnd, LPDIRECTDRAW ddInterface, LPDIRECTDRAWSURFACE primarySurface, LPDIRECTDRAWSURFACE surface2, LPDIRECTDRAWSURFACE surface3, LPDIRECTDRAWSURFACE backSurface, LPDIRECTDRAWPALETTE ddPalette, HPALETTE hPalette);
-    void SDrawMessageBox(LPCSTR msg, LPCSTR title, UINT type);
+    BOOL SDrawManualInitialize(HWND hWnd, IDirectDraw* ddInterface, IDirectDrawSurface* primarySurface, IDirectDrawSurface* surface2, IDirectDrawSurface* surface3, IDirectDrawSurface* backSurface, IDirectDrawPalette* ddPalette, HPALETTE hPalette);
+    void SDrawMessageBox(char* msg, char* title, UINT type);
     void SDrawDestroy();
     void SDrawRealizePalette();
     HWND SDrawGetFrameWindow(HWND* sdraw_framewindow);

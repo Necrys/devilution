@@ -1,6 +1,13 @@
 #pragma once
 
-#include "../types.h"
+#include "types.h"
+
+struct _SNETPROGRAMDATA;
+struct _SNETPLAYERDATA;
+struct _SNETUIDATA;
+struct _SNETVERSIONDATA;
+struct _SNETCAPS;
+struct _SNETEVENT;
 
 namespace Storm {
     BOOL SNetLeaveGame(int type);

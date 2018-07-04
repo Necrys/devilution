@@ -1,4 +1,5 @@
 #include "reg.h"
+#include "stormstub.h"
 
 #include <log.h>
 

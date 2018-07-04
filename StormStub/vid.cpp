@@ -1,4 +1,5 @@
 #include "vid.h"
+#include "stormstub.h"
 
 #include <log.h>
 
@@ -7,29 +8,29 @@
 namespace Storm {
 
 BOOL SVidInitialize(HANDLE video) {
-    LOG_DBG("video: 0x%p", video);
+    SS_DBG("video: 0x%p", video);
     return TRUE;
 }
 
 BOOL SVidDestroy() {
-    LOG_DBG("");
+    SS_DBG("");
     return TRUE;
 }
 
 BOOL SVidPlayBegin(char *filename, int arg4, int a3, int a4, int a5, int a6, HANDLE* video) {
-    LOG_DBG("filename: %s", filename);
+    SS_DBG("filename: %s", filename);
     static void* handle;
     *video = handle;
     return TRUE;
 }
 
 BOOL SVidPlayContinue() {
-    LOG_DBG("");
+    SS_DBG("");
     return FALSE;
 }
 
 BOOL SVidPlayEnd(HANDLE video) {
-    LOG_DBG("");
+    SS_DBG("");
     return TRUE;
 }
 
