@@ -19,7 +19,7 @@ struct wave_cpp_init
 
 bool __fastcall WCloseFile(void *file)
 {
-	return SFileCloseFile(file);
+	return Storm::SFileCloseFile(file);
 }
 
 int __fastcall WGetFileSize(HANDLE hsFile, unsigned long *a2)
@@ -33,7 +33,7 @@ int __fastcall WGetFileSize(HANDLE hsFile, unsigned long *a2)
 	v2 = a2;
 	for ( i = hsFile; ; WGetFileArchive(i, &a2a, 0) )
 	{
-		result = SFileGetFileSize(i, v2);
+		result = Storm::SFileGetFileSize(i, v2);
 		if ( result )
 			break;
 	}
@@ -52,7 +52,7 @@ void __fastcall WGetFileArchive(HANDLE hsFile, int *a2, char *dwInitParam)
 	v4 = hsFile;
 	if ( (unsigned int)*a2 >= 5 )
 		FileErrDlg(dwInitParam);
-	if ( v4 && SFileGetFileArchive(v4, &archive) && archive != diabdat_mpq )
+	if ( v4 && Storm::SFileGetFileArchive(v4, &archive) && archive != diabdat_mpq )
 	{
 		Sleep(0x14u);
 		++*v3;
@@ -76,8 +76,7 @@ int __fastcall WOpenFile(char *dwInitParam, HANDLE *phsFile, int a3)
 	v3 = phsFile;
 	for ( i = dwInitParam; ; WGetFileArchive(0, &a2a, i) )
 	{
-		//_LOBYTE(v5) = SFileOpenFile(i, v3);
-		if ( SFileOpenFile(i, v3) )
+		if ( Storm::SFileOpenFile(i, v3) )
 			return 1;
 		if ( a3 && Storm::SErrGetLastError() == 2 )
 			break;
@@ -99,7 +98,7 @@ char __fastcall WReadFile(HANDLE hsFile, char *buf, int a3)
 	a2a = 0;
 	for ( offset = WSetFilePointer(hsFile, 0, 0, 1); ; WSetFilePointer(v4, offset, 0, 0) )
 	{
-		v5 = SFileReadFile(v4, v3, a3, (unsigned long *)&nread, 0);
+		v5 = Storm::SFileReadFile(v4, v3, a3, (unsigned long *)&nread, 0);
 		if ( v5 )
 			break;
 		WGetFileArchive(v4, &a2a, 0);
@@ -107,7 +106,7 @@ char __fastcall WReadFile(HANDLE hsFile, char *buf, int a3)
 	return v5;
 }
 
-int __fastcall WSetFilePointer(HANDLE file1, int offset, HANDLE file2, int whence)
+int __fastcall WSetFilePointer(HANDLE file1, int offset, PLONG file2, int whence)
 {
 	int v4; // edi
 	HANDLE i; // esi
@@ -118,7 +117,7 @@ int __fastcall WSetFilePointer(HANDLE file1, int offset, HANDLE file2, int whenc
 	v4 = offset;
 	for ( i = file1; ; WGetFileArchive(i, &a2, 0) )
 	{
-		result = SFileSetFilePointer(i, v4, file2, whence);
+		result = Storm::SFileSetFilePointer(i, v4, file2, whence);
 		if ( result != -1 )
 			break;
 	}

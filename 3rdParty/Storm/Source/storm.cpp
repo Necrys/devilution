@@ -226,7 +226,7 @@ int STORMAPI SBigToBinaryBuffer(void *buffer, int length, int a3, int a4) rInt;
 void __stdcall SDrawMessageBox(char *,char *,int) rVoid;
 void __cdecl SDrawDestroy(void) rVoid;
 bool __cdecl StormDestroy(void) rBool;
-bool __stdcall SFileSetBasePath(char *) rBool;
+bool __stdcall SFileSetBasePath(const char *) rBool;
 void __cdecl SDrawRealizePalette(void) rVoid;
 bool __cdecl SVidPlayContinue(void) rBool;
 bool __stdcall SNetGetOwnerTurnsWaiting(int *) rBool;

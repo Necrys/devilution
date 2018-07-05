@@ -3,6 +3,7 @@
 #include "../types.h"
 #include <log.h>
 #include <stormstub.h>
+#include <common_types.h>
 
 char gbSomebodyWonGameKludge; // weak
 char pkdata_6761C0[4100];

@@ -44,17 +44,17 @@ void __fastcall init_cleanup(bool show_cursor)
 	init_run_office_from_start_menu();
 	if ( diabdat_mpq )
 	{
-		SFileCloseArchive(diabdat_mpq);
+    Storm::SFileCloseArchive(diabdat_mpq);
 		diabdat_mpq = 0;
 	}
 	if ( patch_rt_mpq )
 	{
-		SFileCloseArchive(patch_rt_mpq);
+    Storm::SFileCloseArchive(patch_rt_mpq);
 		patch_rt_mpq = 0;
 	}
 	if ( unused_mpq )
 	{
-		SFileCloseArchive(unused_mpq);
+    Storm::SFileCloseArchive(unused_mpq);
 		unused_mpq = 0;
 	}
 	UiDestroy();
@@ -305,7 +305,7 @@ void *__fastcall init_test_access(char *mpq_path, char *mpq_name, char *reg_loc,
 	if ( !GetCurrentDirectoryA(0x104u, Buffer) )
 		TermMsg("Can't get program path");
 	init_strip_trailing_slash(Buffer);
-	if ( !SFileSetBasePath(Buffer) )
+	if ( !Storm::SFileSetBasePath(Buffer) )
 		TermMsg("SFileSetBasePath");
 	if ( !GetModuleFileNameA(ghInst, Filename, 0x104u) )
 		TermMsg("Can't get program name");
@@ -316,9 +316,9 @@ void *__fastcall init_test_access(char *mpq_path, char *mpq_name, char *reg_loc,
 	strcpy(v5, Buffer);
 	strcat(v5, mpq_namea);
 #ifdef COPYPROT
-	if ( SFileOpenArchive(v5, flags, on_cd, &archive) )
+	if ( Storm::SFileOpenArchive(v5, flags, on_cd, &archive) )
 #else
-	if ( SFileOpenArchive(v5, flags, 0, &archive) )
+	if ( Storm::SFileOpenArchive(v5, flags, 0, &archive) )
 #endif
 		return archive;
 	if ( strcmp(Filename, Buffer) )
@@ -326,9 +326,9 @@ void *__fastcall init_test_access(char *mpq_path, char *mpq_name, char *reg_loc,
 		strcpy(v5, Filename);
 		strcat(v5, mpq_namea);
 #ifdef COPYPROT
-		if ( SFileOpenArchive(v5, flags, on_cd, &archive) )
+		if ( Storm::SFileOpenArchive(v5, flags, on_cd, &archive) )
 #else
-		if ( SFileOpenArchive(v5, flags, 0, &archive) )
+		if ( Storm::SFileOpenArchive(v5, flags, 0, &archive) )
 #endif
 			return archive;
 	}
@@ -341,9 +341,9 @@ void *__fastcall init_test_access(char *mpq_path, char *mpq_name, char *reg_loc,
 			strcpy(v5, v15);
 			strcat(v5, mpq_namea);
 #ifdef COPYPROT
-			if ( SFileOpenArchive(v5, flags, on_cd, &archive) )
+			if ( Storm::SFileOpenArchive(v5, flags, on_cd, &archive) )
 #else
-			if ( SFileOpenArchive(v5, flags, 0, &archive) )
+			if ( Storm::SFileOpenArchive(v5, flags, 0, &archive) )
 #endif
 				return archive;
 		}
@@ -396,7 +396,7 @@ int __fastcall init_read_test_file(char *mpq_path, char *mpq_name, int flags, vo
 		{
 			strcpy(mpq_patha, v8);
 			strcat(mpq_patha, v4);
-			if ( SFileOpenArchive(mpq_patha, flags, 1, archive) )
+			if ( Storm::SFileOpenArchive(mpq_patha, flags, 1, archive) )
 				break;
 		}
 		if ( !*v7 )

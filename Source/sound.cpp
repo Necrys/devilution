@@ -301,7 +301,7 @@ void __fastcall snd_init(HWND hWnd)
 	if ( sglpDS && !sglpDS->SetCooperativeLevel(hWnd, DSSCL_EXCLUSIVE) )
 		sound_create_primary_buffer(0);
 	Storm::SVidInitialize(sglpDS);
-	SFileDdaInitialize(sglpDS);
+  Storm::SFileDdaInitialize(sglpDS);
 	gbSndInited = sglpDS != 0;
 }
 // 4A22D4: using guessed type char gbMusicOn;
@@ -407,7 +407,7 @@ void __cdecl sound_cleanup()
 {
 	snd_update(1);
 	Storm::SVidDestroy();
-	SFileDdaDestroy();
+  Storm::SFileDdaDestroy();
 	if ( sglpDS )
 	{
 		sglpDS->Release();
@@ -430,8 +430,8 @@ void __cdecl music_stop()
 {
 	if ( sgpMusicTrack )
 	{
-		SFileDdaEnd(sgpMusicTrack);
-		SFileCloseFile(sgpMusicTrack);
+    Storm::SFileDdaEnd(sgpMusicTrack);
+    Storm::SFileCloseFile(sgpMusicTrack);
 		sgpMusicTrack = 0;
 		sgnMusicTrack = 6;
 	}
@@ -447,12 +447,10 @@ void __fastcall music_start(int nTrack)
 	music_stop();
 	if ( sglpDS && gbMusicOn )
 	{
-		//_LOBYTE(v2) = SFileOpenFile(sgszMusicTracks[v1], &sgpMusicTrack);
-		//v3 = v2;
 		sound_create_primary_buffer((int)sgpMusicTrack);
-		if ( SFileOpenFile(sgszMusicTracks[nTrack], &sgpMusicTrack) )
+		if ( Storm::SFileOpenFile(sgszMusicTracks[nTrack], &sgpMusicTrack) )
 		{
-			SFileDdaBeginEx(sgpMusicTrack, 0x40000, 0x40000, 0, sglMusicVolume, 0, 0);
+			Storm::SFileDdaBeginEx(sgpMusicTrack, 0x40000, 0x40000, 0, sglMusicVolume, 0, 0);
 			sgnMusicTrack = nTrack;
 		}
 		else
@@ -481,7 +479,7 @@ int __fastcall sound_get_or_set_music_volume(int volume)
 	{
 		sglMusicVolume = volume;
 		if ( sgpMusicTrack )
-			SFileDdaSetVolume(sgpMusicTrack, volume, 0);
+      Storm::SFileDdaSetVolume(sgpMusicTrack, volume, 0);
 	}
 	return sglMusicVolume;
 }

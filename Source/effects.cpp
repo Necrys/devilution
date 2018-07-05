@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int effects_cpp_init_value; // weak
 int sfxdelay; // weak
@@ -903,8 +904,8 @@ void __cdecl sfx_stop()
 {
 	if ( sfx_stream )
 	{
-		SFileDdaEnd(sfx_stream);
-		SFileCloseFile(sfx_stream);
+    Storm::SFileDdaEnd(sfx_stream);
+    Storm::SFileCloseFile(sfx_stream);
 		sfx_stream = 0;
 		sfx_data_cur = 0;
 	}
@@ -1148,11 +1149,9 @@ void __fastcall stream_play(TSFX *pSFX, int lVolume, int lPan)
 	{
 		if ( v5 > 0 )
 			v5 = 0;
-		//_LOBYTE(v6) = SFileOpenFile(v4->pszName, &sfx_stream);
-		if ( SFileOpenFile(v4->pszName, &sfx_stream) )
+		if ( Storm::SFileOpenFile(v4->pszName, &sfx_stream) )
 		{
-			//_LOBYTE(v7) = SFileDdaBeginEx(sfx_stream, 0x40000, 0, 0, v5, lPan, 0);
-			if ( SFileDdaBeginEx(sfx_stream, 0x40000, 0, 0, v5, lPan, 0) )
+			if ( Storm::SFileDdaBeginEx(sfx_stream, 0x40000, 0, 0, v5, lPan, 0) )
 				sfx_data_cur = v4;
 			else
 				sfx_stop();
@@ -1282,8 +1281,7 @@ void __cdecl sound_update()
 		//v3 = v1;
 		if ( sfx_stream )
 		{
-			//_LOBYTE(v2) = SFileDdaGetPos(sfx_stream, (int)&v4, (int)&v3);
-			if ( SFileDdaGetPos(sfx_stream, (int)&v4, (int)&v3) )
+			if ( Storm::SFileDdaGetPos(sfx_stream, (int)&v4, (int)&v3) )
 			{
 				if ( v4 >= v3 )
 					sfx_stop();

@@ -2,6 +2,7 @@
 
 #include "../types.h"
 #include <stormstub.h>
+#include <common_types.h>
 
 int nthread_cpp_init_value; // weak
 char byte_679704; // weak

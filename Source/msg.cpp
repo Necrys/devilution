@@ -2,6 +2,7 @@
 
 #include "../types.h"
 #include <stormstub.h>
+#include <common_types.h>
 
 int sgdwOwnerWait; // weak
 int msg_cpp_init_value; // weak
