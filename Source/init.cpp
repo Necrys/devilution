@@ -63,7 +63,7 @@ void __fastcall init_cleanup(bool show_cursor)
 	NetClose();
 	dx_cleanup();
 	MI_Dummy(v1);
-	StormDestroy();
+	Storm::StormDestroy();
 	if ( v1 )
 		ShowCursor(1);
 }

@@ -2,6 +2,7 @@
 
 #include "../types.h"
 #include <log.h>
+#include <stormstub.h>
 
 int mainmenu_cpp_init_value; // weak
 char chr_name_str[16];
@@ -100,7 +101,7 @@ LABEL_6:
 	if ( cname )
 	{
 		if ( clen )
-			SStrCopy(cname, chr_name_str, clen);
+			Storm::SStrCopy(cname, chr_name_str, clen);
 	}
 	return 1;
 }

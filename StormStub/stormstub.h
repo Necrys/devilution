@@ -17,3 +17,10 @@
 #include "draw.h"
 #include "net.h"
 #include "err.h"
+#include "mem.h"
+#include "mpq.h"
+#include "str.h"
+
+namespace Storm {
+    bool StormDestroy();
+}

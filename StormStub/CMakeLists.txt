@@ -46,6 +46,13 @@ add_library ( stormstub STATIC
     net.cpp
     err.h
     err.cpp
+	storm.cpp
+	mpq.h
+	mpq.cpp
+	mem.h
+	mem.cpp
+	str.h
+	str.cpp
     stormstub.h
 )
 

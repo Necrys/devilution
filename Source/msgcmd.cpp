@@ -121,7 +121,7 @@ void __fastcall msgcmd_free_event(ChatCmd *a1)
 		if ( (signed int)v3 <= 0 )
 			break;
 		msgcmd_remove_event(v3, v1);
-		SMemFree(v3, ".?AUEXTERNMESSAGE@@", -2, 0);
+        Storm::SMemFree(v3, ".?AUEXTERNMESSAGE@@", -2, 0);
 	}
 }
 
@@ -141,7 +141,7 @@ bool __fastcall msgcmd_delete_server_cmd_W(ChatCmd *cmd, ServerCommand *extern_m
 	else
 		v4 = 0;
 	msgcmd_remove_event(ptr, (int)extern_msg);
-	SMemFree(ptr, ".?AUEXTERNMESSAGE@@", -2, 0);
+    Storm::SMemFree(ptr, ".?AUEXTERNMESSAGE@@", -2, 0);
 	return v4;
 }
 
@@ -156,7 +156,7 @@ ChatCmd *__fastcall msgcmd_alloc_event(ChatCmd *a1, int a2, int a3, int a4, int 
 	v5 = a5;
 	_LOBYTE(v5) = a5 | 8;
 	v6 = a1;
-	v7 = (ChatCmd *)SMemAlloc(a4 + 136, ".?AUEXTERNMESSAGE@@", -2, v5);
+	v7 = (ChatCmd *)Storm::SMemAlloc(a4 + 136, ".?AUEXTERNMESSAGE@@", -2, v5);
 	if ( v7 )
 	{
 		v7->next = 0;
@@ -182,7 +182,7 @@ void __fastcall msgcmd_remove_event(ChatCmd *a1, int a2)
 	if ( a2 & 1 )
 	{
 		if ( v2 )
-			SMemFree(v2, "delete", -1, 0);
+            Storm::SMemFree(v2, "delete", -1, 0);
 	}
 }
 

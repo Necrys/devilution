@@ -19,8 +19,6 @@ SFileReadFile
 SFileSetBasePath
 SFileSetFilePointer
 
-StormDestroy
-
 SDrawDestroy
 SDrawGetFrameWindow
 SDrawManualInitialize
@@ -33,5 +31,3 @@ SMemFree
 SErrGetErrorStr
 SErrGetLastError
 SErrSetLastError
-
-SStrCopy

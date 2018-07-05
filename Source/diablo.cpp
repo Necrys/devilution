@@ -321,6 +321,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		init_create_window();
 		sound_init();
 		UiInitialize();
+
 #ifdef _DEBUG
 		if ( showintrodebug )
 			play_movie("gendata\\logo.smk", 1);

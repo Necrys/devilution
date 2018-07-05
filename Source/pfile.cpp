@@ -209,7 +209,7 @@ bool __fastcall pfile_create_player_description(char *dst, int len)
 	v4 = UiCreatePlayerDescription(&hero_info, 'DRTL', src);
 	if ( v4 )
 	{
-		SStrCopy(v3, src, v2);
+        Storm::SStrCopy(v3, src, v2);
 LABEL_5:
 		v4 = 1;
 	}
@@ -241,10 +241,10 @@ int __fastcall pfile_create_save_file(char *name_1, char *name_2)
 	v5 = pfile_get_save_num_from_name(v3);
 	if ( v5 == 10 )
 		return 0;
-	SStrCopy(&hero_names[32 * v5], v2, 32);
-	SStrCopy(plr[v4]._pName, v2, 32);
+    Storm::SStrCopy(&hero_names[32 * v5], v2, 32);
+    Storm::SStrCopy(plr[v4]._pName, v2, 32);
 	if ( !_strcmpi(chr_name_str, v3) )
-		SStrCopy(chr_name_str, v2, 16);
+        Storm::SStrCopy(chr_name_str, v2, 16);
 	game_2_ui_player(plr, &heroinfo, gbValidSaveFile);
 	UiSetupPlayerInfo(chr_name_str, &heroinfo, 'DRTL');
 	pfile_write_hero();
