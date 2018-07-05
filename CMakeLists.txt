@@ -23,6 +23,9 @@ if ( MSVC )
     endforeach ()
 endif ()
 
+set ( STORMLIB_PATH 3rdParty/StormLib )
+
+add_subdirectory ( ${STORMLIB_PATH} )
 add_subdirectory ( common )
 if ( MSVC )
 add_subdirectory ( DDrawProxy )
@@ -33,6 +36,7 @@ add_subdirectory ( StormStub )
 add_subdirectory ( 3rdParty/PKWare )
 add_subdirectory ( Source )
 
+add_dependencies ( stormstub stormlib )
 add_dependencies ( stormstub Storm )
 add_dependencies ( diablo stormstub )
 add_dependencies ( diablo common )

@@ -28,10 +28,12 @@ set ( COMPILE_DEFS
 set ( INCLUDE_DIRS
 	${INCLUDE_DIRS}
 	${STORM_LIB_INCLUDE}
+  ${STORMLIB_PATH}/src
 )
 set ( LINK_LIBS
 	${LINK_LIBS}
 	${STORM_LIB}
+  stormlib
 )
 endif ()
 
