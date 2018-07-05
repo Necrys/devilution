@@ -10,6 +10,8 @@
 #endif
 
 #include <cassert>
+
+#ifndef STORMSTUB_PASSTHROUGH
 #include <queue>
 #include <vector>
 
@@ -35,48 +37,75 @@ using NetPacket = NetPacketT<unsigned char, 256>;
 std::queue<NetPacket*> g_packetQueue;
 std::vector<NetPacket> g_packetPool;
 
+NetPacket* getFreePacket() {
+  //SS_DBG("packetPoolSize: %d", g_packetPool.size());
+  for (auto& p : g_packetPool) {
+    if (p.isFree()) {
+      return &p;
+    }
+  }
+
+  // TODO: make a safe reallocation
+  assert(false);
+  return nullptr;
+}
+
 void initNetEmulation(const size_t packetPoolSize) {
     LOG_INF("packetPoolSize: %d", packetPoolSize);
     g_packetPool.resize(packetPoolSize);
 }
+#else
+void initNetEmulation(const size_t packetPoolSize) {
 
-NetPacket* getFreePacket() {
-    //SS_DBG("packetPoolSize: %d", g_packetPool.size());
-    for (auto& p : g_packetPool) {
-        if (p.isFree()) {
-            return &p;
-        }
-    }
-
-    // TODO: make a safe reallocation
-    assert(false);
-    return nullptr;
 }
+#endif
 
 namespace Storm {
     BOOL SNetLeaveGame(int type) {
         SS_DBG("type: %d", type);
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetLeaveGame(type);
+#else
         return FALSE;
+#endif
     }
 
     BOOL SNetDestroy() {
         SS_DBG("");
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetDestroy();
+#else
         return FALSE;
+#endif
     }
 
     BOOL SNetGetOwnerTurnsWaiting(int* turns) {
+#ifdef STORMSTUB_PASSTHROUGH
+        BOOL result = ::SNetGetOwnerTurnsWaiting(turns);
+        SS_DBG("turns: %d -> %d", *turns, result);
+        return result;
+#else
         SS_DBG("");
         return FALSE;
+#endif
     }
 
     BOOL SNetDropPlayer(int playerid, DWORD flags) {
         SS_DBG("playerid: %d, flags: 0x%x", playerid, flags);
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetDropPlayer(playerid, flags);
+#else
         return FALSE;
+#endif
     }
 
     int SNetSendServerChatCommand(const char *command) {
         SS_DBG("command: \"%s\"", command);
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetSendServerChatCommand(command);
+#else
         return 0;
+#endif
     }
 
     const char* dump(char* data, int size) {
@@ -113,6 +142,15 @@ namespace Storm {
     }
 
     BOOL SNetSendMessage(unsigned int playerID, char *data, unsigned int databytes) {
+#ifdef STORMSTUB_PASSTHROUGH
+        BOOL result = ::SNetSendMessage(playerID, data, databytes);
+        SS_DBG("playerID: %d, data: 0x%p, size: %u -> %d", playerID, data, databytes, result);
+        if (data && databytes > 0) {
+            SS_DBG("data:\n%s", dump(data, databytes));
+        }
+
+        return result;
+#else
         if (playerID == 0) {
             auto packet = getFreePacket();
             assert(databytes <= packet->MaxSize);
@@ -122,65 +160,64 @@ namespace Storm {
         }
 
         return TRUE;
-        /*
-        BOOL result = ::SNetSendMessage(playerID, data, databytes);
-        SS_DBG("playerID: %d, data: 0x%p, size: %u -> %d", playerID, data, databytes, result);
-        if (data && databytes > 0) {
-            SS_DBG("data:\n%s", dump(data, databytes));
-        }
-        
-        return result;
-        */
+#endif
     }
 
     BOOL SNetReceiveMessage(int *senderplayerid, BYTE **data, int *databytes) {
-        // There must be another way to return packets to the free pool
-        static NetPacket* prevPacket = nullptr;
-        if (prevPacket) {
-            prevPacket->setFree();
-            prevPacket = nullptr;
-        }
+#ifdef STORMSTUB_PASSTHROUGH
+      BOOL result = ::SNetReceiveMessage(senderplayerid, (char**)data, databytes);
+      SS_DBG("senderplayerid: %d, data: 0x%p, databytes: %u -> %d", *senderplayerid, *data, *databytes, result);
+      if (result && *data && *databytes > 0) {
+          SS_DBG("data:\n%s", dump((char*)*data, *databytes));
+      }
+      return result;
+#else
+      // There must be another way to return packets to the free pool
+      static NetPacket* prevPacket = nullptr;
+      if (prevPacket) {
+          prevPacket->setFree();
+          prevPacket = nullptr;
+      }
 
-        if (g_packetQueue.empty()) {
-            setLastError(STORM_ERROR_NO_MESSAGES_WAITING);
-            *senderplayerid = -1;
-            *data = nullptr;
-            *databytes = 0;
-            return FALSE;
-        }
+      if (g_packetQueue.empty()) {
+          setLastError(STORM_ERROR_NO_MESSAGES_WAITING);
+          *senderplayerid = -1;
+          *data = nullptr;
+          *databytes = 0;
+          return FALSE;
+      }
 
-        auto packet = g_packetQueue.front();
-        g_packetQueue.pop();
-        prevPacket = packet;
-        *senderplayerid = 0;
-        *data = packet->data;
-        *databytes = packet->databytes;
-        return TRUE;
+      auto packet = g_packetQueue.front();
+      g_packetQueue.pop();
+      prevPacket = packet;
+      *senderplayerid = 0;
+      *data = packet->data;
+      *databytes = packet->databytes;
 
-        /*
-        BOOL result = ::SNetReceiveMessage(senderplayerid, (char**)data, databytes);
-        SS_DBG("senderplayerid: %d, data: 0x%p, databytes: %u -> %d", *senderplayerid, *data, *databytes, result);
-        if (result && *data && *databytes > 0) {
-            SS_DBG("data:\n%s", dump((char*)*data, *databytes));
-        }
-        return result;
-        */
+      return TRUE;
+#endif
     }
 
     BOOL SNetSetBasePlayer(unsigned int a1) {
         SS_DBG("a1: %u", a1);
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetSetBasePlayer(a1);
+#else
         return TRUE;
+#endif
     }
 
     BOOL SNetGetGameInfo(int type, char *src, unsigned int length, size_t *byteswritten) {
-        strcpy(src, "local");
-        *byteswritten = 6;
-        return TRUE;
-        /*
+#ifdef STORMSTUB_PASSTHROUGH
         BOOL result = ::SNetGetGameInfo(type, src, length, byteswritten);
         SS_DBG("type: %d, src: %s, length: %u, byteswritten: %d", type, src, length, *byteswritten);
         return result;
-        */
+#else
+        SS_DBG("");
+        strcpy(src, "local");
+        *byteswritten = 6;
+        return TRUE;
+#endif
     }
 
     void dumpNetProgramData(const _SNETPROGRAMDATA* program) {
@@ -237,13 +274,16 @@ namespace Storm {
 
     int SNetInitializeProvider(unsigned long a1, _SNETPROGRAMDATA* program, _SNETPLAYERDATA* player, _SNETUIDATA* ui, _SNETVERSIONDATA* version) {
         SS_DBG("");
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetInitializeProvider(a1, program, player, ui, version);
+#else
         dumpNetProgramData(program);
         dumpNetPlayerData(player);
         dumpNetUIData(ui);
         dumpNetVersionData(version);
 
         return ::SNetInitializeProvider(a1, program, player, ui, version);
-        return 1;
+#endif
     }
 
     BOOL SNetCreateGame(const char *pszGameName,
@@ -260,9 +300,12 @@ namespace Storm {
             "GameTemplateSize: %d, playerCount: %d, creatorName: %s, a11: %s, playerID: %d",
             pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
             playerCount, creatorName, a11, *playerID);
-        //return ::SNetCreateGame(pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
-        //    playerCount, creatorName, a11, playerID);
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetCreateGame(pszGameName, pszGamePassword, pszGameStatString, dwGameType, GameTemplateData, GameTemplateSize,
+            playerCount, creatorName, a11, playerID);
+#else
         return TRUE;
+#endif
     }
 
     void dumpNetCaps(const _SNETCAPS* caps) {
@@ -282,7 +325,12 @@ namespace Storm {
 
     int SNetGetProviderCaps(_SNETCAPS* pNetCaps) {
         SS_DBG("");
-        
+#ifdef STORMSTUB_PASSTHROUGH
+        int result = ::SNetGetProviderCaps(pNetCaps);
+        SS_DBG("result: %d", result);
+        dumpNetCaps(pNetCaps);
+        return result;
+#else
         pNetCaps->maxmessagesize = 496;
         pNetCaps->maxqueuesize = 16;
         pNetCaps->maxplayers = 1;
@@ -292,85 +340,81 @@ namespace Storm {
         pNetCaps->defaultturnsintransit = 0;
 
         return 1;
-        
-        /*    
-        int result = ::SNetGetProviderCaps(pNetCaps);
-        SS_DBG("result: %d", result);
-        dumpNetCaps(pNetCaps);
-        return result;
-        */
+#endif
     }
 
     BOOL SNetGetTurnsInTransit(int *turns) {
+#ifdef STORMSTUB_PASSTHROUGH
+        BOOL result = ::SNetGetTurnsInTransit(turns);
+        SS_DBG("turns: %d -> %d", *turns, result);
+        return result;
+#else
         SS_DBG("");
         *turns = 0;
         return TRUE;
-
-        /*
-        BOOL result = ::SNetGetTurnsInTransit(turns);
-        SS_DBG("turns: %d, result: %d", *turns, result);
-        return result;
-        */
+#endif
     }
 
     BOOL SNetSendTurn(char* data, size_t databytes) {
-        return TRUE;
-
-        /*
+#ifdef STORMSTUB_PASSTHROUGH
         SS_DBG("data:\n%s\n", dump(data, databytes));
         BOOL result = ::SNetSendTurn(data, databytes);
         SS_DBG("result: %d", result);
         return result;
-        */
+#else
+        return TRUE;
+#endif
     }
 
     BOOL SNetReceiveTurns(int a1, int arraysize, unsigned char **arraydata, unsigned int *arraydatabytes, DWORD *arrayplayerstatus) {
-        static unsigned long turncount = 0;
-        ++turncount;
-        *arraydata = (unsigned char*)&turncount;
-        return TRUE;
-        /*
-        SS_DBG("");
-        int* pPlayerStatus = reinterpret_cast<int*>(arrayplayerstatus);
-        int* pArrayData = reinterpret_cast<int*>(*arraydata);
+#ifdef STORMSTUB_PASSTHROUGH
+      int* pPlayerStatus = reinterpret_cast<int*>(arrayplayerstatus);
+      int* pArrayData = reinterpret_cast<int*>(*arraydata);
 
-        if (pArrayData) {
-            SS_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
-                a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
-                arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
-                pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
-            );
-        }
-        BOOL result = ::SNetReceiveTurns(a1, arraysize, arraydata, arraydatabytes, arrayplayerstatus);
+      BOOL result = ::SNetReceiveTurns(a1, arraysize, arraydata, arraydatabytes, arrayplayerstatus);
 
-        pArrayData = reinterpret_cast<int*>(*arraydata);
-        SS_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
-            a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
-            arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
-            pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
-        );
-        return result;
-        */
+      pArrayData = reinterpret_cast<int*>(*arraydata);
+      SS_DBG("a1: %d, arraysize: %d, arraydata (0x%p): [%d, %d, %d, %d], arraydatabytes: [%d, %d, %d, %d], arrayplayerstatus: [%d, %d, %d, %d]",
+          a1, arraysize, pArrayData, pArrayData[0], pArrayData[1], pArrayData[2], pArrayData[3],
+          arraydatabytes[0], arraydatabytes[1], arraydatabytes[2], arraydatabytes[3],
+          pPlayerStatus[0], pPlayerStatus[1], pPlayerStatus[2], pPlayerStatus[3]
+      );
+      return result;
+#else
+      static unsigned long turncount = 0;
+      ++turncount;
+      *arraydata = (unsigned char*)&turncount;
+      return TRUE;
+#endif
     }
 
     BOOL SNetPerformUpgrade(DWORD *upgradestatus) {
-        /*
+#ifdef STORMSTUB_PASSTHROUGH
         BOOL result = ::SNetPerformUpgrade(upgradestatus);
         SS_DBG("upgradestatus: %ul, result: %d", *upgradestatus, result);
         return result;
-        */
+#else
         SS_DBG("");
         return TRUE;
+#endif
     }
 
-    void* __stdcall SNetUnregisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
+    void* __stdcall SNetUnregisterEventHandler(int a1, void(__stdcall* func)(struct _SNETEVENT *)) {
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetUnregisterEventHandler(a1, func);
+#else
         SS_DBG("");
         return (void*)1;
+#endif
     }
 
-    void* __stdcall SNetRegisterEventHandler(int, void(__stdcall*)(struct _SNETEVENT *)) {
+    void* __stdcall SNetRegisterEventHandler(int a1, void(__stdcall* func)(struct _SNETEVENT *)) {
+#ifdef STORMSTUB_PASSTHROUGH
+        return ::SNetRegisterEventHandler(a1, func);
+#else
         SS_DBG("");
         return (void*)1;
+#endif
     }
 
 }

@@ -37,7 +37,7 @@ namespace Storm {
     void  SErrSetLastError(DWORD dwErrCode) {
         SS_DBG("dwErrCode: %lu", dwErrCode);
 #ifdef STORMSTUB_PASSTHROUGH
-        ::SErrSetLastError(dwErrCode, buffer, bufferchars);
+        ::SErrSetLastError(dwErrCode);
 #else
         g_err = dwErrCode;
 #endif
