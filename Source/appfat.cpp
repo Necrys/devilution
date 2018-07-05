@@ -19,11 +19,11 @@ struct appfat_cpp_init {
 } appfat_cpp_init;
 
 // delete overloads the delete operator.
-void operator delete(void *ptr) {
+/*void operator delete(void *ptr) {
 	if (ptr != NULL) {
 		Storm::SMemFree(ptr, "delete", -1, 0);
 	}
-}
+}*/
 
 char *__fastcall GetErr(int error_code)
 {

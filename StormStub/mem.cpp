@@ -26,7 +26,7 @@ namespace Storm {
     }
 
     BOOL SMemFree(void* location, char* logfilename, int logline, char defaultValue) {
-        LOG_DBG("location: 0x%p, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", location, logfilename, logline, defaultValue);
+        //LOG_DBG("location: 0x%p, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", location, logfilename, logline, defaultValue);
 #ifdef STORMSTUB_PASSTHROUGH
         return ::SMemFree(location, logfilename, logline, defaultValue);
 #else

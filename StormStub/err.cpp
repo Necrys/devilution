@@ -26,7 +26,7 @@ namespace Storm {
     BOOL SErrGetErrorStr(DWORD dwErrCode, char *buffer, size_t bufferchars) {
 #ifdef STORMSTUB_PASSTHROUGH
         BOOL result = ::SErrGetErrorStr(dwErrCode, buffer, bufferchars);
-        SS_DBG("dwErrCode: %lu, buffer: 0x%p (\"%s\"), bufferchars: %u -> %d", dwErrCode, buffer, bufferchars, result);
+        SS_DBG("dwErrCode: %lu, buffer: 0x%p (\"%s\"), bufferchars: %u -> %d", dwErrCode, buffer, buffer, bufferchars, result);
         return result;
 #else
         SS_DBG("dwErrCode: %d", dwErrCode);
