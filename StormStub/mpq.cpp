@@ -35,7 +35,9 @@ namespace Storm {
         return result;
 #else
         SS_DBG("filename: \"%s\"", filename);
-        return ::SFileOpenFile(filename, phFile);
+        BOOL result = ::SFileOpenFile(filename, phFile);
+        setLastError(::SErrGetLastError());
+        return result;
 #endif
     }
     
@@ -82,10 +84,16 @@ namespace Storm {
     LONG SFileGetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh) {
 #ifdef STORMSTUB_PASSTHROUGH
         LONG result = ::SFileGetFileSize(hFile, lpFileSizeHigh);
-        SS_DBG("hFile: 0x%x, lpFileSizeHigh: %lu -> %d", hFile, *lpFileSizeHigh, result);
+        if (lpFileSizeHigh)
+            SS_DBG("hFile: 0x%p, lpFileSizeHigh: %lu -> %l", hFile, *lpFileSizeHigh, result);
+        else
+            SS_DBG("hFile: 0x%p -> %l", hFile, result);
         return result;
 #else
-        SS_DBG("hFile: 0x%x, lpFileSizeHigh: %lu", hFile, *lpFileSizeHigh);
+        if (lpFileSizeHigh)
+            SS_DBG("hFile: 0x%p, lpFileSizeHigh: %lu", hFile, *lpFileSizeHigh);
+        else
+            SS_DBG("hFile: 0x%p", hFile);
         return ::SFileGetFileSize(hFile, lpFileSizeHigh);
 #endif
     }
