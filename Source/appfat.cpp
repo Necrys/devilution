@@ -51,7 +51,7 @@ char *__fastcall GetErr(int error_code)
 	}
 	else
 	{
-		if ( !SErrGetErrorStr(error_code, sz_error_buf, 256) && !FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, v1, 0x400u, sz_error_buf, 0x100u, NULL) )
+		if ( !Storm::SErrGetErrorStr(error_code, sz_error_buf, 256) && !FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, v1, 0x400u, sz_error_buf, 0x100u, NULL) )
 			wsprintfA(sz_error_buf, "unknown error 0x%08x", v1);
 	}
 	v4 = strlen(sz_error_buf);

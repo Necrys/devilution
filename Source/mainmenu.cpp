@@ -85,7 +85,7 @@ int __stdcall mainmenu_select_hero_dialog(int u1, int u2, int u3, int u4, int mo
 	}
 	if ( a5 == 4 )
 	{
-		SErrSetLastError(1223);
+		Storm::SErrSetLastError(1223);
 		return 0;
 	}
 LABEL_6:

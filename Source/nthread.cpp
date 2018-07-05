@@ -67,7 +67,7 @@ void __fastcall nthread_terminate_game(char *pszFcn)
 	char *v3; // eax
 
 	v1 = pszFcn;
-	v2 = SErrGetLastError();
+	v2 = Storm::SErrGetLastError();
 	if ( v2 != STORM_ERROR_INVALID_PLAYER )
 	{
 		if ( v2 == STORM_ERROR_GAME_TERMINATED || v2 == STORM_ERROR_NOT_IN_GAME )
@@ -154,7 +154,7 @@ LABEL_11:
 		dword_679764 += 50;
 		return 1;
 	}
-	if ( SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
+	if ( Storm::SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
 		nthread_terminate_game("SNetReceiveTurns");
 	byte_679758 = 0;
 	sgbSyncCountdown = 1;

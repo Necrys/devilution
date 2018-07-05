@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int wave_cpp_init_value; // weak
 
@@ -78,7 +79,7 @@ int __fastcall WOpenFile(char *dwInitParam, HANDLE *phsFile, int a3)
 		//_LOBYTE(v5) = SFileOpenFile(i, v3);
 		if ( SFileOpenFile(i, v3) )
 			return 1;
-		if ( a3 && SErrGetLastError() == 2 )
+		if ( a3 && Storm::SErrGetLastError() == 2 )
 			break;
 	}
 	return 0;

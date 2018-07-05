@@ -24,10 +24,3 @@ SDrawGetFrameWindow
 SDrawManualInitialize
 SDrawRealizePalette
 SDrawUpdatePalette
-
-SMemAlloc
-SMemFree
-
-SErrGetErrorStr
-SErrGetLastError
-SErrSetLastError

@@ -31,7 +31,7 @@ set ( INCLUDE_DIRS
 )
 set ( LINK_LIBS
 	${LINK_LIBS}
-	Storm
+	${STORM_LIB}
 )
 endif ()
 

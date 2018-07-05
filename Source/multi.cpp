@@ -212,7 +212,7 @@ void __fastcall multi_send_msg_packet(int a1, unsigned char *a2, unsigned char l
 	{
 		if ( v4 & v8 )
 		{
-			if ( !Storm::SNetSendMessage(v5, (char*)&pkt.hdr, len + 19) && SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
+			if ( !Storm::SNetSendMessage(v5, (char*)&pkt.hdr, len + 19) && Storm::SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
 				break;
 		}
 		++v5;
@@ -1014,7 +1014,7 @@ int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA 
 	}
 	else
 	{
-		DWORD dwErr = SErrGetLastError();
+		DWORD dwErr = Storm::SErrGetLastError();
         LOG_DBG("multi.cpp", "%s() SErrGetLastError: 0x%.8x", __FUNCTION__, dwErr);
 		result = 0;
 	}
@@ -1038,7 +1038,7 @@ int __fastcall multi_init_multi(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA *
 		if ( byte_678640 )
 		{
 			if ( !UiSelectProvider(0, (_SNETPROGRAMDATA *)a2, v4, ui_info, &fileinfo, &type)
-			  && (!i || SErrGetLastError() != STORM_ERROR_REQUIRES_UPGRADE || !multi_upgrade(a4)) )
+			  && (!i || Storm::SErrGetLastError() != STORM_ERROR_REQUIRES_UPGRADE || !multi_upgrade(a4)) )
 			{
 				return 0;
 			}
