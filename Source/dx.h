@@ -2,6 +2,8 @@
 #ifndef __DX_H__
 #define __DX_H__
 
+HWND dxGetWindow();
+
 extern void *sgpBackBuf;
 extern int dx_cpp_init_value; // weak
 extern IDirectDraw *lpDDInterface;

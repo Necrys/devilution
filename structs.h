@@ -403,7 +403,7 @@ struct Tile
 	short left;
 	short bottom;
 };
-
+/*
 struct _SNETVERSIONDATA
 {
 	int size;
@@ -412,7 +412,7 @@ struct _SNETVERSIONDATA
 	char *originalarchivefile;
 	char *patcharchivefile;
 };
-
+*/
 struct LightListStruct
 {
 	int _lx;
@@ -1022,7 +1022,7 @@ struct TownerStruct
 	int _tNFrames;
 	char *_tNData; // unsigned char *
 };
-
+/*
 struct _SNETUIDATA
 {
 	int size;
@@ -1065,7 +1065,7 @@ struct _SNETPROGRAMDATA
 	int reserved4;
 	int languageid;
 };
-
+*/
 struct _uiheroinfo
 {
 	_uiheroinfo *next;
@@ -1166,7 +1166,7 @@ struct TPktHdr
 	unsigned short wLen;
 };
 #pragma pack(pop)
-
+/*
 struct _SNETEVENT
 {
 	int eventid;
@@ -1195,7 +1195,7 @@ struct _SNETCAPS
 	int defaultturnssec;
 	int defaultturnsintransit;
 };
-
+*/
 struct TMPQHeader // _FILEHEADER
 {
 	int dwID;

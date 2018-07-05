@@ -334,7 +334,7 @@ SNetLeaveGame(
 
 BOOL STORMAPI SNetPerformUpgrade(DWORD *upgradestatus);
 BOOL STORMAPI SNetReceiveMessage(int *senderplayerid, char **data, int *databytes);
-BOOL STORMAPI SNetReceiveTurns(int a1, int arraysize, char **arraydata, unsigned int *arraydatabytes, DWORD *arrayplayerstatus);
+BOOL STORMAPI SNetReceiveTurns(int a1, int arraysize, unsigned char **arraydata, unsigned int *arraydatabytes, DWORD *arrayplayerstatus);
 
 // Values for arrayplayerstatus
 #define SNET_PS_OK             0
@@ -1289,7 +1289,7 @@ int STORMAPI SBigToBinaryBuffer(void *buffer, int length, int a3, int a4);
 void __stdcall SDrawMessageBox(char *,char *,int);
 void __cdecl SDrawDestroy(void);
 bool __cdecl StormDestroy(void);
-bool __stdcall SFileSetBasePath(char *);
+bool __stdcall SFileSetBasePath(const char *);
 void __cdecl SDrawRealizePalette(void);
 bool __cdecl SVidPlayContinue(void);
 bool __stdcall SNetGetOwnerTurnsWaiting(int *);

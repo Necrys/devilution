@@ -1,6 +1,8 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
+#include <common_types.h>
 
 int nthread_cpp_init_value; // weak
 char byte_679704; // weak
@@ -66,7 +68,7 @@ void __fastcall nthread_terminate_game(char *pszFcn)
 	char *v3; // eax
 
 	v1 = pszFcn;
-	v2 = SErrGetLastError();
+	v2 = Storm::SErrGetLastError();
 	if ( v2 != STORM_ERROR_INVALID_PLAYER )
 	{
 		if ( v2 == STORM_ERROR_GAME_TERMINATED || v2 == STORM_ERROR_NOT_IN_GAME )
@@ -93,7 +95,7 @@ int __fastcall nthread_send_and_recv_turn(int cur_turn, int turn_delta)
 
 	v2 = turn_delta;
 	v3 = cur_turn;
-	if ( SNetGetTurnsInTransit(&turns) )
+	if ( Storm::SNetGetTurnsInTransit(&turns) )
 	{
 		if ( turns >= (unsigned int)gdwTurnsInTransit )
 			return v3;
@@ -103,7 +105,7 @@ int __fastcall nthread_send_and_recv_turn(int cur_turn, int turn_delta)
 			v6 = dword_679754 | v3 & 0x7FFFFFFF;
 			dword_679754 = 0;
 			turn = v6;
-			if ( !SNetSendTurn((char *)&turn, 4) )
+			if ( !Storm::SNetSendTurn((char *)&turn, 4) )
 				break;
 			v3 += v2;
 			if ( v3 >= 0x7FFFFFFF )
@@ -139,7 +141,7 @@ int __fastcall nthread_recv_turns(int *pfSendAsync)
 	sgbPacketCountdown = byte_679704;
 	if ( !v2 )
 		goto LABEL_11;
-	if ( SNetReceiveTurns(0, 4, (char **)glpMsgTbl, (unsigned int *)gdwMsgLenTbl, (unsigned long *)player_state) )
+	if ( Storm::SNetReceiveTurns(0, 4, (unsigned char **)glpMsgTbl, (unsigned int *)gdwMsgLenTbl, (unsigned long *)player_state) )
 	{
 		if ( !byte_679758 )
 		{
@@ -153,7 +155,7 @@ LABEL_11:
 		dword_679764 += 50;
 		return 1;
 	}
-	if ( SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
+	if ( Storm::SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
 		nthread_terminate_game("SNetReceiveTurns");
 	byte_679758 = 0;
 	sgbSyncCountdown = 1;
@@ -191,7 +193,7 @@ void __fastcall nthread_start(bool set_turn_upper_bit)
 	else
 		dword_679754 = 0;
 	caps.size = 36;
-	if ( !SNetGetProviderCaps(&caps) )
+	if ( !Storm::SNetGetProviderCaps(&caps) )
 	{
 		v3 = GetLastErr();
 		TermMsg("SNetGetProviderCaps:\n%s", v3);

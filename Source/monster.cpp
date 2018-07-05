@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 int MissileFileFlag; // weak
 int monster_cpp_init_value; // weak
@@ -4084,7 +4085,7 @@ void __cdecl DoEnding()
 	int v3; // esi
 
 	if ( (unsigned char)gbMaxPlayers > 1u )
-		SNetLeaveGame(0x40000004);
+		Storm::SNetLeaveGame(0x40000004);
 	music_stop();
 	if ( (unsigned char)gbMaxPlayers > 1u )
 		Sleep(1000);
@@ -9005,7 +9006,7 @@ bool __fastcall SpawnSkeleton(int ii, int x, int y)
 
 int __cdecl PreSpawnSkeleton()
 {
-	int skeltypes; // edx
+	int skeltypes = 0; // edx
 	int j; // edx
 	int skel; // eax
 	int i; // [esp+10h] [ebp-4h]

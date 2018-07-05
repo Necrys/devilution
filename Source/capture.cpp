@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
 
 void __cdecl CaptureScreen()
 {
@@ -11,6 +12,7 @@ void __cdecl CaptureScreen()
 	if ( hObject != INVALID_HANDLE_VALUE)
 	{
 		DrawAndBlit();
+        LOG_DBG("capture.cpp", "%s(), lpDDPalette->GetEntries()", __FUNCTION__);
 		lpDDPalette->GetEntries(0, 0, 256, palette);
 		RedPalette(palette);
 
@@ -31,6 +33,7 @@ void __cdecl CaptureScreen()
 			DeleteFileA(FileName);
 
 		Sleep(300);
+        LOG_DBG("capture.cpp", "%s(), lpDDPalette->SetEntries()", __FUNCTION__);
 		lpDDPalette->SetEntries(0, 0, 256, palette);
 	}
 }
@@ -169,5 +172,6 @@ void __fastcall RedPalette(PALETTEENTRY *pal)
 		red[i].peFlags = 0;
 	}
 
+    LOG_DBG("capture.cpp", "%s(), lpDDPalette->SetEntries()", __FUNCTION__);
 	lpDDPalette->SetEntries(0, 0, 256, red);
 }

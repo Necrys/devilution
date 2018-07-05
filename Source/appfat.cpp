@@ -1,6 +1,7 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <stormstub.h>
 
 // +Infinity after initialization of appfat.cpp.
 float appfat_cpp_init_value;
@@ -43,7 +44,7 @@ char *__fastcall GetErr(int error_code)
 	}
 	else
 	{
-		if ( !SErrGetErrorStr(error_code, sz_error_buf, 256) && !FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, v1, 0x400u, sz_error_buf, 0x100u, NULL) )
+		if ( !Storm::SErrGetErrorStr(error_code, sz_error_buf, 256) && !FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, v1, 0x400u, sz_error_buf, 0x100u, NULL) )
 			wsprintfA(sz_error_buf, "unknown error 0x%08x", v1);
 	}
 	v4 = strlen(sz_error_buf);
@@ -237,10 +238,10 @@ void __cdecl FreeDlg()
 	dx_cleanup();
 	if ( (unsigned char)gbMaxPlayers > 1u )
 	{
-		if ( SNetLeaveGame(3) )
+		if ( Storm::SNetLeaveGame(3) )
 			Sleep(2000u);
 	}
-	SNetDestroy();
+	Storm::SNetDestroy();
 	ShowCursor(1);
 }
 // 4B7A34: using guessed type int terminating;
@@ -254,7 +255,8 @@ void DrawDlg(char *pszFmt, ...)
 
 	va_start(arglist, pszFmt);
 	wvsprintfA(text, pszFmt, arglist);
-	SDrawMessageBox(text, "Diablo", MB_TASKMODAL|MB_ICONEXCLAMATION);
+    MessageBoxA(nullptr, text, "Diablo", MB_TASKMODAL | MB_ICONEXCLAMATION);
+	Storm::SDrawMessageBox(text, "Diablo", MB_TASKMODAL|MB_ICONEXCLAMATION);
 }
 
 void __fastcall DDErrDlg(int error_code, int log_line_nr, char *log_file_path)

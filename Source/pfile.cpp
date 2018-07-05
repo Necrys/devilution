@@ -1,6 +1,8 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
 
 int pfile_cpp_init_value;
 char hero_names[320];
@@ -207,7 +209,7 @@ bool __fastcall pfile_create_player_description(char *dst, int len)
 	v4 = UiCreatePlayerDescription(&hero_info, 'DRTL', src);
 	if ( v4 )
 	{
-		SStrCopy(v3, src, v2);
+        Storm::SStrCopy(v3, src, v2);
 LABEL_5:
 		v4 = 1;
 	}
@@ -239,10 +241,10 @@ int __fastcall pfile_create_save_file(char *name_1, char *name_2)
 	v5 = pfile_get_save_num_from_name(v3);
 	if ( v5 == 10 )
 		return 0;
-	SStrCopy(&hero_names[32 * v5], v2, 32);
-	SStrCopy(plr[v4]._pName, v2, 32);
+    Storm::SStrCopy(&hero_names[32 * v5], v2, 32);
+    Storm::SStrCopy(plr[v4]._pName, v2, 32);
 	if ( !_strcmpi(chr_name_str, v3) )
-		SStrCopy(chr_name_str, v2, 16);
+        Storm::SStrCopy(chr_name_str, v2, 16);
 	game_2_ui_player(plr, &heroinfo, gbValidSaveFile);
 	UiSetupPlayerInfo(chr_name_str, &heroinfo, 'DRTL');
 	pfile_write_hero();
@@ -325,7 +327,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 			v1 = strrchr(FileName, '\\') + 1;
 			if ( v1 != (char *)1 && OpenFile(FileName, &ReOpenBuff, 0x4000u) != -1 )
 			{
-				if ( !SRegLoadString("Diablo\\Converted", (const char *)v1, 0, NewFileName, 260) )
+				if ( !Storm::SRegLoadString("Diablo\\Converted", (const char *)v1, 0, NewFileName, 260) )
 				{
 					while ( 1 )
 					{
@@ -338,7 +340,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 					}
 					if ( CopyFileA(FileName, NewFileName, 1) )
 					{
-						SRegSaveString("Diablo\\Converted", v1, 0, NewFileName);
+                        Storm::SRegSaveString("Diablo\\Converted", v1, 0, NewFileName);
 						v4 = GetFileAttributesA(NewFileName);
 						if ( v4 != -1 )
 						{
@@ -346,7 +348,7 @@ bool __stdcall pfile_ui_set_hero_infos(void (__stdcall *ui_add_hero_info)(_uiher
 							SetFileAttributesA(NewFileName, v4);
 						}
 					}
-				}
+                }
 			}
 LABEL_13:
 			++lpSrcStr;
@@ -427,7 +429,7 @@ bool __fastcall pfile_read_hero(void *archive, PkPlayerStruct *pPack)
 	void *file; // [esp+24h] [ebp-4h]
 
 	v11 = pPack;
-	v2 = SFileOpenFileEx(archive, "hero", 0, &file);
+	v2 = Storm::SFileOpenFileEx(archive, "hero", 0, &file);
 	if ( v2 )
 	{
 		strcpy(password, "xrgyrkj1");
@@ -438,14 +440,14 @@ bool __fastcall pfile_read_hero(void *archive, PkPlayerStruct *pPack)
 		nSize = 16;
 		if ( (unsigned char)gbMaxPlayers > 1u )
 			strcpy(password, "szqnlsk1");
-		dwSize = SFileGetFileSize((int *)file, 0);
+		dwSize = Storm::SFileGetFileSize((int *)file, 0);
 		v4 = dwSize;
 		if ( !dwSize )
 			goto LABEL_15;
 		v5 = (char *)DiabloAllocPtr(dwSize);
 		v6 = v5;
 		//_LOBYTE(v7) = SFileReadFile(file, v5, v4, (unsigned long *)&dwBytes, 0);
-		if ( SFileReadFile(file, v5, v4, (unsigned long *)&dwBytes, 0) )
+		if ( Storm::SFileReadFile(file, v5, v4, (unsigned long *)&dwBytes, 0) )
 		{
 			dwBytes = codec_decode(v6, v4, password);
 			if ( dwBytes )
@@ -453,10 +455,10 @@ bool __fastcall pfile_read_hero(void *archive, PkPlayerStruct *pPack)
 			if ( (unsigned char)gbMaxPlayers > 1u )
 			{
 				GetComputerNameA(password, &nSize);
-				if ( !SFileSetFilePointer(file, 0, 0, 0) )
+				if ( !Storm::SFileSetFilePointer(file, 0, 0, 0) )
 				{
 					//_LOBYTE(v8) = SFileReadFile(file, v6, v4, (unsigned long *)&dwBytes, 0);
-					if ( SFileReadFile(file, v6, v4, (unsigned long *)&dwBytes, 0) )
+					if ( Storm::SFileReadFile(file, v6, v4, (unsigned long *)&dwBytes, 0) )
 					{
 						dwBytes = codec_decode(v6, v4, password);
 LABEL_11:
@@ -474,7 +476,7 @@ LABEL_13:
 		if ( v6 )
 			mem_free_dbg(v6);
 LABEL_15:
-		SFileCloseFile(file);
+    Storm::SFileCloseFile(file);
 		v2 = v13;
 	}
 	return v2;
@@ -488,13 +490,12 @@ void *__fastcall pfile_open_save_archive(int *unused, int save_num)
 	void *archive; // [esp+104h] [ebp-4h]
 
 	pfile_get_save_path(SrcStr, 260, save_num);
-	//_LOBYTE(v2) = SFileOpenArchive(SrcStr, 0x7000, 0, &archive);
-	return SFileOpenArchive(SrcStr, 0x7000, 0, &archive) != 0 ? archive : NULL;
+	return Storm::SFileOpenArchive(SrcStr, 0x7000, 0, &archive) != 0 ? archive : NULL;
 }
 
 void __fastcall pfile_SFileCloseArchive(void *hsArchive)
 {
-	SFileCloseArchive(hsArchive);
+  Storm::SFileCloseArchive(hsArchive);
 }
 
 bool __fastcall pfile_archive_contains_game(void *hsArchive)
@@ -505,10 +506,9 @@ bool __fastcall pfile_archive_contains_game(void *hsArchive)
 	file = hsArchive;
 	if ( gbMaxPlayers != 1 )
 		return 0;
-	//_LOBYTE(v1) = SFileOpenFileEx(hsArchive, "game", 0, &file);
-	if ( !SFileOpenFileEx(hsArchive, "game", 0, &file) )
+	if ( !Storm::SFileOpenFileEx(hsArchive, "game", 0, &file) )
 		return 0;
-	SFileCloseFile(file);
+  Storm::SFileCloseFile(file);
 	return 1;
 }
 // 679660: using guessed type char gbMaxPlayers;
@@ -862,18 +862,18 @@ char *__fastcall pfile_read(char *pszName, int *pdwLen)
 	if ( !v4 )
 		TermMsg("Unable to open save file archive");
 	//_LOBYTE(v5) = SFileOpenFileEx(v4, v13, 0, &file);
-	if ( !SFileOpenFileEx(v4, v13, 0, &file) )
+	if ( !Storm::SFileOpenFileEx(v4, v13, 0, &file) )
 		TermMsg("Unable to open save file");
-	v6 = SFileGetFileSize((int *)file, 0);
+	v6 = Storm::SFileGetFileSize((int *)file, 0);
 	*v2 = v6;
 	if ( !v6 )
 		TermMsg("Invalid save file");
 	v7 = DiabloAllocPtr(*v2);
 	src_dst = v7;
 	//_LOBYTE(v8) = SFileReadFile(file, (char *)v7, *v2, (unsigned long *)&nread, 0);
-	if ( !SFileReadFile(file, (char *)v7, *v2, (unsigned long *)&nread, 0) )
+	if ( !Storm::SFileReadFile(file, (char *)v7, *v2, (unsigned long *)&nread, 0) )
 		TermMsg("Unable to read save file");
-	SFileCloseFile(file);
+  Storm::SFileCloseFile(file);
 	pfile_SFileCloseArchive(v4);
 	strcpy(password, "xrgyrkj1");
 	nSize = 16;
@@ -890,10 +890,10 @@ char *__fastcall pfile_read(char *pszName, int *pdwLen)
 		if ( (unsigned char)gbMaxPlayers > 1u )
 		{
 			GetComputerNameA(password, &nSize);
-			if ( SFileSetFilePointer(file, 0, 0, 0) )
+			if ( Storm::SFileSetFilePointer(file, 0, 0, 0) )
 				TermMsg("Unable to read save file");
 			//_LOBYTE(v11) = SFileReadFile(file, v9, *v2, (unsigned long *)&nread, 0);
-			if ( !SFileReadFile(file, v9, *v2, (unsigned long *)&nread, 0) )
+			if ( !Storm::SFileReadFile(file, v9, *v2, (unsigned long *)&nread, 0) )
 				TermMsg("Unable to read save file");
 			*v2 = codec_decode(v9, *v2, password);
 		}

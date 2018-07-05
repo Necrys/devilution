@@ -1,6 +1,9 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
+#include <common_types.h>
 
 char gbSomebodyWonGameKludge; // weak
 char pkdata_6761C0[4100];
@@ -103,7 +106,7 @@ void __fastcall multi_send_packet(void *packet, int dwSize)
 	NetRecvPlrData(&pkt);
 	pkt.hdr.wLen = v3 + 19;
 	memcpy(pkt.body, v2, v3);
-	if ( !SNetSendMessage(myplr, &pkt.hdr, (unsigned short)pkt.hdr.wLen) )
+	if ( !Storm::SNetSendMessage(myplr, (char*)&pkt.hdr, (unsigned short)pkt.hdr.wLen) )
 		nthread_terminate_game("SNetSendMessage0");
 }
 
@@ -152,7 +155,7 @@ void __fastcall NetSendHiPri(unsigned char *pbMsg, unsigned char bLen)
 		size = v7;
 		v8 = gdwNormalMsgSize - v7;
 		pkt.hdr.wLen = v8;
-		if ( !SNetSendMessage(-2, &pkt.hdr, v8) )
+		if ( !Storm::SNetSendMessage(-2, (char*)&pkt.hdr, v8) )
 			nthread_terminate_game("SNetSendMessage");
 	}
 }
@@ -210,7 +213,7 @@ void __fastcall multi_send_msg_packet(int a1, unsigned char *a2, unsigned char l
 	{
 		if ( v4 & v8 )
 		{
-			if ( !SNetSendMessage(v5, &pkt.hdr, len + 19) && SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
+			if ( !Storm::SNetSendMessage(v5, (char*)&pkt.hdr, len + 19) && Storm::SErrGetLastError() != STORM_ERROR_INVALID_PLAYER )
 				break;
 		}
 		++v5;
@@ -516,7 +519,7 @@ void __cdecl multi_check_drop_player()
 		if ( !(v1 & 0x40000) )
 		{
 			if ( v1 & 0x10000 )
-				SNetDropPlayer(v0, 0x40000006);
+				Storm::SNetDropPlayer(v0, 0x40000006);
 		}
 		++v0;
 	}
@@ -547,8 +550,7 @@ void __cdecl multi_process_network_packets()
 
 	multi_clear_left_tbl();
 	multi_process_tmsgs();
-	//_LOBYTE(v0) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
-	if ( SNetReceiveMessage((int *)arglist, (char **)&pkt, &len) )
+	if ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) )
 	{
 		do
 		{
@@ -619,11 +621,10 @@ void __cdecl multi_process_network_packets()
 				}
 				multi_handle_all_packets(*(int *)arglist, (TPkt *)&v2[1], len - 19);
 			}
-			//_LOBYTE(v15) = SNetReceiveMessage((int *)arglist, (char **)&pkt, &len);
 		}
-		while ( SNetReceiveMessage((int *)arglist, (char **)&pkt, &len) );
+		while ( Storm::SNetReceiveMessage((int *)arglist, (BYTE **)&pkt, &len) );
 	}
-	if ( SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
+	if ( Storm::SErrGetLastError() != STORM_ERROR_NO_MESSAGES_WAITING )
 		nthread_terminate_game("SNetReceiveMsg");
 }
 // 676194: using guessed type char gbBufferMsgs;
@@ -692,7 +693,7 @@ void __fastcall multi_send_zero_packet(int pnum, char a2, void *pbSrc, int dwLen
 		*(_WORD *)&pkt.body[3] = dwBody;
 		memcpy(&pkt.body[5], pbSrc, dwBody);
 		pkt.hdr.wLen = *(_WORD *)&pkt.body[3] + 24;
-		if ( !SNetSendMessage(pnuma, &pkt.hdr, *(unsigned short *)&pkt.body[3] + 24) )
+		if ( !Storm::SNetSendMessage(pnuma, (char*)&pkt.hdr, *(unsigned short *)&pkt.body[3] + 24) )
 		{
 			nthread_terminate_game("SNetSendMessage2");
 			return;
@@ -713,7 +714,7 @@ void __cdecl NetClose()
 		dthread_cleanup();
 		tmsg_cleanup();
 		multi_event_handler(0);
-		SNetLeaveGame(3);
+		Storm::SNetLeaveGame(3);
 		msgcmd_cmd_cleanup();
 		if ( (unsigned char)gbMaxPlayers > 1u )
 			Sleep(2000);
@@ -731,9 +732,9 @@ char __fastcall multi_event_handler(int a1)
 	char *v5; // eax
 
 	v1 = a1;
-	v2 = SNetRegisterEventHandler;
+	v2 = Storm::SNetRegisterEventHandler;
 	if ( !a1 )
-		v2 = SNetUnregisterEventHandler;
+		v2 = Storm::SNetUnregisterEventHandler;
 	v3 = 0;
 	do
 	{
@@ -788,6 +789,7 @@ void __stdcall multi_handle_events(_SNETEVENT *pEvt)
 
 int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 {
+    LOG_DBG("multi.cpp", "%s(bSinglePlayer: %d)", __FUNCTION__, bSinglePlayer);
 	int v2; // ebx
 	int v4; // eax
 	//int v5; // ecx
@@ -826,7 +828,7 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		a2.size = 16;
 		memset(&UiData, 0, 0x50u);
 		UiData.size = 80;
-		UiData.parentwindow = SDrawGetFrameWindow(0);
+        UiData.parentwindow = Storm::SDrawGetFrameWindow(0);
 		UiData.artcallback = UiArtCallback;
 		UiData.createcallback = UiCreateGameCallback;
 		UiData.drawdesccallback = UiDrawDescCallback;
@@ -847,7 +849,7 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		memset(sgbSendDeltaTbl, 0, 4u);
 		memset(plr, 0, 0x15360u);
 		memset(sgwPackPlrOffsetTbl, 0, 8u);
-		SNetSetBasePlayer(0);
+        Storm::SNetSetBasePlayer(0);
 		if ( v14 )
 			v4 = multi_init_single(&ProgramData, &a2, &UiData);
 		else
@@ -890,11 +892,9 @@ int __fastcall NetInit(int bSinglePlayer, int *pfExitProgram)
 		++v2;
 	}
 	while ( v2 < 17 );
-	//_LOBYTE(v9) = SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, len);
-	if ( !SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, &len) )
+	if ( !Storm::SNetGetGameInfo(GAMEINFO_NAME, szPlayerName, 128, &len) )
 		nthread_terminate_game("SNetGetGameInfo1");
-	//_LOBYTE(v10) = SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, len);
-	if ( !SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, &len) )
+	if ( !Storm::SNetGetGameInfo(GAMEINFO_PASSWORD, szPlayerDescript, 128, &len) )
 		nthread_terminate_game("SNetGetGameInfo2");
 	return 1;
 }
@@ -994,17 +994,17 @@ void __cdecl SetupLocalCoords()
 
 int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA *user_info, _SNETUIDATA *ui_info)
 {
+    LOG_DBG("multi.cpp", "%s()", __FUNCTION__);
+
 	//int v3; // eax
 	int result; // eax
 	//int v5; // eax
 	char *v6; // eax
 
-	//_LOBYTE(v3) = SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo);
-	if ( SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo) )
+	if (Storm::SNetInitializeProvider(0, client_info, user_info, ui_info, &fileinfo))
 	{
 		ui_info = 0;
-		//_LOBYTE(v5) = SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info);
-		if ( !SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info) )
+		if ( !Storm::SNetCreateGame("local", "local", "local", 0, (char *)&sgGameInitInfo.dwSeed, 8, 1, "local", "local", (int *)&ui_info) )
 		{
 			v6 = GetLastErr();
 			TermMsg("SNetCreateGame1:\n%s", v6);
@@ -1015,7 +1015,8 @@ int __fastcall multi_init_single(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA 
 	}
 	else
 	{
-		SErrGetLastError();
+		DWORD dwErr = Storm::SErrGetLastError();
+        LOG_DBG("multi.cpp", "%s() SErrGetLastError: 0x%.8x", __FUNCTION__, dwErr);
 		result = 0;
 	}
 	return result;
@@ -1038,7 +1039,7 @@ int __fastcall multi_init_multi(_SNETPROGRAMDATA *client_info, _SNETPLAYERDATA *
 		if ( byte_678640 )
 		{
 			if ( !UiSelectProvider(0, (_SNETPROGRAMDATA *)a2, v4, ui_info, &fileinfo, &type)
-			  && (!i || SErrGetLastError() != STORM_ERROR_REQUIRES_UPGRADE || !multi_upgrade(a4)) )
+			  && (!i || Storm::SErrGetLastError() != STORM_ERROR_REQUIRES_UPGRADE || !multi_upgrade(a4)) )
 			{
 				return 0;
 			}
@@ -1069,7 +1070,7 @@ int __fastcall multi_upgrade(int *a1)
 	int status; // [esp+4h] [ebp-4h]
 
 	v1 = a1;
-	SNetPerformUpgrade((unsigned long *)&status);
+	Storm::SNetPerformUpgrade((unsigned long *)&status);
 	result = 1;
 	if ( status && status != 1 )
 	{

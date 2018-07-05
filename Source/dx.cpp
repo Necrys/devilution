@@ -1,6 +1,10 @@
 //HEADER_GOES_HERE
 
 #include "../types.h"
+#include <log.h>
+#include <stormstub.h>
+
+static HWND g_hWnd = nullptr;
 
 void *sgpBackBuf;
 int dx_cpp_init_value; // weak
@@ -95,7 +99,10 @@ void __fastcall dx_init(HWND hWnd)
 	palette_init();
 	GdiSetBatchLimit(1);
 	dx_create_back_buffer();
-	SDrawManualInitialize(hWnda, lpDDInterface, lpDDSPrimary, 0, 0, lpDDSBackBuf, lpDDPalette, 0);
+
+    g_hWnd = hWnda;
+
+	Storm::SDrawManualInitialize(hWnda, lpDDInterface, lpDDSPrimary, 0, 0, lpDDSBackBuf, lpDDPalette, 0);
 }
 // 484364: using guessed type int fullscreen;
 // 52A549: using guessed type char gbEmulate;
@@ -115,9 +122,11 @@ void __cdecl dx_create_back_buffer()
 	if ( !gbBackBuf )
 	{
 		v4.dwSize = 108;
+        LOG_DBG("dx.cpp", "%s(), lock primary surface", __FUNCTION__);
 		v1 = lpDDSPrimary->Lock(NULL, &v4, DDLOCK_WRITEONLY|DDLOCK_WAIT, NULL);
 		if ( !v1 )
 		{
+            LOG_DBG("dx.cpp", "%s(), unlock primary surface", __FUNCTION__);
 			lpDDSPrimary->Unlock(NULL);
 			sgpBackBuf = DiabloAllocPtr(0x7B000);
 			return;
@@ -136,6 +145,7 @@ void __cdecl dx_create_back_buffer()
 	v2 = lpDDSPrimary->GetPixelFormat(&v4.ddpfPixelFormat);
 	if ( v2 )
 		TermDlg(104, v2, "C:\\Src\\Diablo\\Source\\dx.cpp", 94);
+    LOG_DBG("dx.cpp", "%s [IDirectDraw:0x%p]CreateSurface(0x%p, 0x%p, NULL)", __FUNCTION__, lpDDInterface, &v4, &lpDDSBackBuf);
 	v3 = lpDDInterface->CreateSurface(&v4, &lpDDSBackBuf, NULL);
 	if ( v3 )
 		TermDlg(104, v3, "C:\\Src\\Diablo\\Source\\dx.cpp", 96);
@@ -151,6 +161,7 @@ void __cdecl dx_create_primary_surface()
 	v1.dwSize = 108;
 	v1.dwFlags = DDSD_CAPS;
 	v1.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+    LOG_DBG("dx.cpp", "%s [IDirectDraw:0x%p]CreateSurface(0x%p, 0x%p, NULL)", __FUNCTION__, lpDDInterface, &v1, &lpDDSPrimary);
 	v0 = lpDDInterface->CreateSurface(&v1, &lpDDSPrimary, NULL);
 	if ( v0 )
 		TermDlg(104, v0, "C:\\Src\\Diablo\\Source\\dx.cpp", 109);
@@ -199,6 +210,7 @@ void __cdecl dx_lock_mutex()
 		if ( sgdwLockCount )
 			goto LABEL_9;
 		v2.dwSize = 108;
+        LOG_DBG("dx.cpp", "%s(), lock back buffer", __FUNCTION__);
 		v1 = lpDDSBackBuf->Lock(NULL, &v2, DDLOCK_WAIT, NULL);
 		if ( v1 )
 			DDErrDlg(v1, 235, "C:\\Src\\Diablo\\Source\\dx.cpp");
@@ -246,7 +258,7 @@ void __cdecl dx_cleanup()
 
 	if ( ghMainWnd )
 		ShowWindow(ghMainWnd, SW_HIDE);
-	SDrawDestroy();
+	Storm::SDrawDestroy();
 	EnterCriticalSection(&sgMemCrit);
 	if ( sgpBackBuf )
 	{
@@ -296,3 +308,7 @@ void __cdecl dx_reinit()
 	LeaveCriticalSection(&sgMemCrit);
 }
 // 52571C: using guessed type int drawpanflag;
+
+HWND dxGetWindow() {
+    return g_hWnd;
+}

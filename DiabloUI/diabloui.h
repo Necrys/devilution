@@ -8,6 +8,7 @@
  *   definitions for DiabloUI
  */
 
+#include "../common/common_types.h"
 
 #ifdef __GNUC__
 extern "C" {

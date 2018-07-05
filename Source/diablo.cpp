@@ -2,6 +2,7 @@
 
 #include "../types.h"
 #include <log.h>
+#include <stormstub.h>
 
 int diablo_cpp_init_value; // weak
 HWND ghMainWnd;
@@ -80,6 +81,7 @@ struct diablo_cpp_init
 
 void __cdecl FreeGameMem()
 {
+    LOG_DBG("");
 	void *v0; // ecx
 	void *v1; // ecx
 	void *v2; // ecx
@@ -111,6 +113,8 @@ void __cdecl FreeGameMem()
 
 int __fastcall diablo_init_menu(int a1, int bSinglePlayer)
 {
+    LOG_DBG("");
+
 	int v2; // esi
 	int v3; // edi
 	int v4; // ecx
@@ -123,8 +127,9 @@ int __fastcall diablo_init_menu(int a1, int bSinglePlayer)
 	{
 		pfExitProgram = 0;
 		dword_5256E8 = 0;
-		if ( !NetInit(v2, &pfExitProgram) )
+		if ( !NetInit(v2, &pfExitProgram) ) {
 			break;
+        }
 		byte_678640 = 0;
 		if ( (v3 || !*(_DWORD *)&gbValidSaveFile)
 		  && (InitLevels(), InitQuests(), InitPortals(), InitDungMsgs(myplr), !*(_DWORD *)&gbValidSaveFile)
@@ -140,7 +145,7 @@ int __fastcall diablo_init_menu(int a1, int bSinglePlayer)
 	}
 	gbRunGameResult = pfExitProgram == 0;
 LABEL_11:
-	SNetDestroy();
+	Storm::SNetDestroy();
 	return gbRunGameResult;
 }
 // 525698: using guessed type int gbRunGameResult;
@@ -149,6 +154,7 @@ LABEL_11:
 
 void __fastcall run_game_loop(int uMsg)
 {
+    LOG_DBG("");
 	//int v3; // eax
 	bool v5; // zf
 	//int v6; // eax
@@ -234,6 +240,7 @@ void __fastcall run_game_loop(int uMsg)
 
 void __fastcall start_game(int uMsg)
 {
+    LOG_DBG("");
 	cineflag = 0;
 	zoomflag = 1;
 	InitCursor();
@@ -253,6 +260,7 @@ void __fastcall start_game(int uMsg)
 
 void __cdecl free_game()
 {
+    LOG_DBG("");
 	int i; // esi
 
 	FreeControlPan();
@@ -273,12 +281,15 @@ void __cdecl free_game()
 
 bool __cdecl diablo_get_not_running()
 {
+    LOG_DBG("");
 	SetLastError(0);
 	CreateEventA(NULL, FALSE, FALSE, "DiabloEvent");
 	return GetLastError() != ERROR_ALREADY_EXISTS;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    Log::instance().init("devilution.log");
+    initNetEmulation(64);
     LOG_DBG("");
 
 	HINSTANCE v4; // esi
@@ -310,6 +321,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		init_create_window();
 		sound_init();
 		UiInitialize();
+
 #ifdef _DEBUG
 		if ( showintrodebug )
 			play_movie("gendata\\logo.smk", 1);
@@ -317,11 +329,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		play_movie("gendata\\logo.smk", 1);
 #endif
 		strcpy(value_name, "Intro");
-		if ( !SRegLoadValue("Diablo", value_name, 0, (int *)&hInstance) )
+		if ( !Storm::SRegLoadValue("Diablo", value_name, 0, (int *)&hInstance) )
 			hInstance = (HINSTANCE)1;
 		if ( hInstance )
 			play_movie("gendata\\diablo1.smk", 1);
-		SRegSaveValue("Diablo", value_name, 0, 0);
+		Storm::SRegSaveValue("Diablo", value_name, 0, 0);
 #ifdef _DEBUG
 		if ( showintrodebug )
 		{
@@ -346,6 +358,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 void __fastcall diablo_parse_flags(char *args)
 {
+    LOG_DBG("");
 #ifdef _DEBUG
 	int n; // edi
 	int v15; // eax
@@ -472,6 +485,7 @@ void __fastcall diablo_parse_flags(char *args)
 
 void __cdecl diablo_init_screen()
 {
+    LOG_DBG("");
 	int v0; // ecx
 	int *v1; // eax
 
@@ -497,6 +511,7 @@ void __cdecl diablo_init_screen()
 
 HWND __fastcall diablo_find_window(LPCSTR lpClassName)
 {
+    LOG_DBG("");
 	HWND result; // eax
 	HWND v2; // esi
 	HWND v3; // eax
@@ -521,6 +536,7 @@ HWND __fastcall diablo_find_window(LPCSTR lpClassName)
 
 void __fastcall diablo_reload_process(HMODULE hModule)
 {
+    LOG_DBG("");
 	char *i; // eax
 	DWORD dwSize; // esi
 	BOOL v3; // edi
@@ -606,6 +622,7 @@ LABEL_23:
 
 int __cdecl PressEscKey()
 {
+    LOG_DBG("");
 	int result; // eax
 
 	result = 0;
@@ -665,6 +682,7 @@ LABEL_10:
 
 LRESULT __stdcall DisableInputWndProc(HWND hWnd, int uMsg, int wParam, int lParam)
 {
+    LOG_DBG("");
 	bool v5; // zf
 
 	if ( uMsg <= (unsigned int)WM_LBUTTONDOWN )
@@ -843,6 +861,7 @@ int __stdcall GM_Game(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 bool __fastcall LeftMouseDown(int a1)
 {
+    LOG_DBG("");
 	int v1; // edi
 	int v3; // eax
 	bool v6; // zf
@@ -1046,6 +1065,7 @@ LABEL_98:
 
 bool __cdecl TryIconCurs()
 {
+    LOG_DBG("");
 	unsigned char v0; // dl
 	int v1; // edx
 	int v2; // eax
@@ -1123,6 +1143,7 @@ LABEL_26:
 
 void __cdecl LeftMouseUp()
 {
+    LOG_DBG("");
 	gmenu_left_mouse(0);
 	control_release_talk_btn();
 	if ( panbtndown )
@@ -1141,6 +1162,7 @@ void __cdecl LeftMouseUp()
 
 void __cdecl RightMouseDown()
 {
+    LOG_DBG("");
 	if ( !gmenu_exception() && sgnTimeoutCurs == CURSOR_NONE && PauseMode != 2 && !plr[myplr]._pInvincible )
 	{
 		if ( doomflag )
@@ -1180,6 +1202,7 @@ void __cdecl RightMouseDown()
 
 bool __fastcall PressSysKey(int wParam)
 {
+    LOG_DBG("");
 	if ( gmenu_exception() || wParam != VK_F10 )
 		return 0;
 	diablo_hotkey_msg(1);
@@ -1188,6 +1211,7 @@ bool __fastcall PressSysKey(int wParam)
 
 void __fastcall diablo_hotkey_msg(int dwMsg)
 {
+    LOG_DBG("");
 	int v1; // esi
 	char *v2; // eax
 	char Filename[260]; // [esp+4h] [ebp-154h]
@@ -1212,12 +1236,14 @@ void __fastcall diablo_hotkey_msg(int dwMsg)
 
 void __fastcall ReleaseKey(int vkey)
 {
+    LOG_DBG("");
 	if ( vkey == VK_SNAPSHOT )
 		CaptureScreen();
 }
 
 void __fastcall PressKey(int vkey)
 {
+    LOG_DBG("");
 	int v1; // esi
 	int v2; // ecx
 	int v3; // ecx
@@ -1462,6 +1488,7 @@ LABEL_101:
 
 void __cdecl diablo_pause_game()
 {
+    LOG_DBG("");
 	if ( (unsigned char)gbMaxPlayers <= 1u )
 	{
 		if ( PauseMode )
@@ -1483,6 +1510,7 @@ void __cdecl diablo_pause_game()
 
 void __fastcall PressChar(int vkey)
 {
+    LOG_DBG("");
 	int v1; // ebx
 	BOOL v4; // ecx
 	int v5; // ecx
@@ -1799,6 +1827,7 @@ LABEL_27:
 
 void __cdecl LoadLvlGFX()
 {
+    LOG_DBG("");
 	switch(leveltype)
 	{
 		case DTYPE_TOWN:
@@ -1840,6 +1869,7 @@ void __cdecl LoadLvlGFX()
 
 void __cdecl LoadAllGFX()
 {
+    LOG_DBG("");
 	pSpeedCels = DiabloAllocPtr(0x100000);
 	IncProgress();
 	IncProgress();
@@ -1851,6 +1881,8 @@ void __cdecl LoadAllGFX()
 
 void __fastcall CreateLevel(int lvldir)
 {
+    LOG_DBG("");
+
 	int hnd; // cl
 
 	switch ( leveltype )
@@ -1895,6 +1927,7 @@ void __fastcall CreateLevel(int lvldir)
 
 void __fastcall LoadGameLevel(bool firstflag, int lvldir)
 {
+    LOG_DBG("");
 	int v2; // ebp
 	bool visited; // edx
 	int i; // ecx
@@ -2132,6 +2165,7 @@ LABEL_72:
 
 void __fastcall game_loop(bool startup)
 {
+    LOG_DBG("");
 	int v1; // ecx
 	int v2; // esi
 
@@ -2167,6 +2201,7 @@ void __fastcall game_loop(bool startup)
 
 void __cdecl game_logic()
 {
+    LOG_DBG("");
 	if ( PauseMode != 2 )
 	{
 		if ( PauseMode == 1 )
@@ -2224,6 +2259,7 @@ void __cdecl game_logic()
 
 void __fastcall timeout_cursor(bool timeout)
 {
+    LOG_DBG("");
 	if ( timeout )
 	{
 		if ( sgnTimeoutCurs == CURSOR_NONE && !sgbMouseDown )
