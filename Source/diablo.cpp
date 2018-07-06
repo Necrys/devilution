@@ -299,7 +299,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	v4 = hInstance;
 #ifndef DEBUGGER
-	diablo_reload_process(hInstance);
+	//diablo_reload_process(hInstance);
 #endif
 	ghInst = v4;
 	if ( RestrictedTest() )

@@ -157,7 +157,7 @@ HRESULT __stdcall DirectDrawSurfaceIf::Lock(LPRECT lpDestRect,
                                             LPDDSURFACEDESC lpDDSurfaceDesc,
                                             DWORD dwFlags,
                                             HANDLE hEvent) {
-    //LOG_DBG("[this:0x%p] %s()", this, __FUNCTION__);
+    LOG_DBG("[this:0x%p] lpDestRect: 0x%p, lpDDSurfaceDesc: 0x%p, dwFlags: 0x%x, hEvent: 0x%p", this, lpDestRect, lpDDSurfaceDesc, dwFlags, hEvent);
     return m_pDDS->Lock(lpDestRect, lpDDSurfaceDesc, dwFlags, hEvent);
 }
 
@@ -189,7 +189,7 @@ HRESULT __stdcall DirectDrawSurfaceIf::SetOverlayPosition(LONG lX,
 }
 
 HRESULT __stdcall DirectDrawSurfaceIf::SetPalette(LPDIRECTDRAWPALETTE lpDDPalette) {
-    LOG_DBG("[this:0x%p] %s()", this, __FUNCTION__);
+    LOG_DBG("[this:0x%p] lpDDPalette: 0x%p", this, lpDDPalette);
 
     HRESULT hr;
     DirectDrawPaletteIf* pal = dynamic_cast<DirectDrawPaletteIf*>(lpDDPalette);
@@ -204,7 +204,7 @@ HRESULT __stdcall DirectDrawSurfaceIf::SetPalette(LPDIRECTDRAWPALETTE lpDDPalett
 }
 
 HRESULT __stdcall DirectDrawSurfaceIf::Unlock(LPVOID lpSurfaceData) {
-    //LOG_DBG("[this:0x%p] %s()", this, __FUNCTION__);
+    LOG_DBG("[this:0x%p], lpSurfaceData: 0x%p", this, lpSurfaceData);
     return m_pDDS->Unlock(lpSurfaceData);
 }
 

@@ -20,6 +20,7 @@ public:
 
 private:
     IDirectDrawPalette* m_pDDP;
+    PALETTEENTRY        m_currentPalette[256];
 };
 
 std::string dumpPalette(const LPPALETTEENTRY colorTable, int count);

@@ -122,7 +122,7 @@ void __cdecl dx_create_back_buffer()
 	if ( !gbBackBuf )
 	{
 		v4.dwSize = 108;
-        LOG_DBG("dx.cpp", "%s(), lock primary surface", __FUNCTION__);
+        LOG_DBG("lock primary surface, lpDDSurfaceDesk: 0x%p", &v4);
 		v1 = lpDDSPrimary->Lock(NULL, &v4, DDLOCK_WRITEONLY|DDLOCK_WAIT, NULL);
 		if ( !v1 )
 		{
@@ -210,7 +210,7 @@ void __cdecl dx_lock_mutex()
 		if ( sgdwLockCount )
 			goto LABEL_9;
 		v2.dwSize = 108;
-        LOG_DBG("dx.cpp", "%s(), lock back buffer", __FUNCTION__);
+        LOG_DBG("lock backbuffer surface, lpDDSurfaceDesk: 0x%p", &v2);
 		v1 = lpDDSBackBuf->Lock(NULL, &v2, DDLOCK_WAIT, NULL);
 		if ( v1 )
 			DDErrDlg(v1, 235, "C:\\Src\\Diablo\\Source\\dx.cpp");

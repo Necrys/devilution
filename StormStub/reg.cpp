@@ -25,14 +25,14 @@ BOOL SRegLoadValue(const char *keyname, const char *valuename, BYTE flags, int *
         }
     }
 
-    LOG_WRN("Unknown pair: keyname: \"%s\", valuename: \"%s\"", keyname, valuename);
+    SS_WRN("Unknown pair: keyname: \"%s\", valuename: \"%s\"", keyname, valuename);
 
     return FALSE;
 }
 
 BOOL SRegSaveValue(const char *keyname, const char *valuename, BYTE flags, DWORD result) {
     assert(keyname && valuename);
-    LOG_INF("Save pair: keyname: \"%s\", valuename: \"%s\" = %d", keyname, valuename, result);
+    SS_DBG("Save pair: keyname: \"%s\", valuename: \"%s\" = %d", keyname, valuename, result);
     return TRUE;
 }
 
@@ -53,14 +53,14 @@ BOOL SRegLoadString(const char *keyname, const char *valuename, BYTE flags, char
 
 BOOL SRegSaveString(const char *keyname, const char *valuename, BYTE flags, char *string) {
     assert(keyname && valuename);
-    LOG_INF("Save pair: keyname: \"%s\", valuename: \"%s\" = \"%s\"", keyname, valuename, string);
+    SS_DBG("Save pair: keyname: \"%s\", valuename: \"%s\" = \"%s\"", keyname, valuename, string);
     return TRUE;
 }
 
 BOOL SRegLoadData(const char *keyname, const char *valuename, int size, LPBYTE lpData, BYTE flags, LPDWORD lpcbData) {
     assert(keyname && valuename && lpData && lpcbData);
     
-    LOG_WRN("Unknown pair: keyname: \"%s\", valuename: \"%s\"", keyname, valuename);
+    SS_WRN("Unknown pair: keyname: \"%s\", valuename: \"%s\"", keyname, valuename);
 
     return FALSE;
 }
@@ -68,7 +68,7 @@ BOOL SRegLoadData(const char *keyname, const char *valuename, int size, LPBYTE l
 BOOL SRegSaveData(const char *keyname, const char *valuename, int size, LPBYTE lpData, DWORD cbData) {
     assert(keyname && valuename && lpData);
 
-    LOG_INF("Save pair: keyname: \"%s\", valuename: \"%s\", %d bytes, lpData: 0x%p, cbData: %ul", keyname, valuename, size, lpData, cbData);
+    SS_DBG("Save pair: keyname: \"%s\", valuename: \"%s\", %d bytes, lpData: 0x%p, cbData: %ul", keyname, valuename, size, lpData, cbData);
 
     return TRUE;
 }

@@ -51,7 +51,7 @@ NetPacket* getFreePacket() {
 }
 
 void initNetEmulation(const size_t packetPoolSize) {
-    LOG_INF("packetPoolSize: %d", packetPoolSize);
+    SS_INF("packetPoolSize: %d", packetPoolSize);
     g_packetPool.resize(packetPoolSize);
 }
 #else

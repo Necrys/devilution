@@ -13,7 +13,7 @@ namespace Storm {
     using Byte = unsigned char;
 
     void* SMemAlloc(size_t amount, char* logfilename, int logline, char defaultValue) {
-        LOG_DBG("amount: %u, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", amount, logfilename, logline, defaultValue);
+        SS_DBG("amount: %u, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", amount, logfilename, logline, defaultValue);
 #ifdef STORMSTUB_PASSTHROUGH
         return ::SMemAlloc(amount, logfilename, logline, defaultValue);
 #else
@@ -26,7 +26,7 @@ namespace Storm {
     }
 
     BOOL SMemFree(void* location, char* logfilename, int logline, char defaultValue) {
-        LOG_DBG("location: 0x%p, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", location, logfilename, logline, defaultValue);
+        SS_DBG("location: 0x%p, logfilename: \"%s\", logline: %d, defaultValue: 0x%X", location, logfilename, logline, defaultValue);
 #ifdef STORMSTUB_PASSTHROUGH
         return ::SMemFree(location, logfilename, logline, defaultValue);
 #else

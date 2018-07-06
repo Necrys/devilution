@@ -3158,7 +3158,7 @@ LABEL_8:
 			while ( 1 )
 			{
 				DDS_desc.dwSize = 108;
-                LOG_DBG("scrollrt.cpp", "%s(), lock primary buffer", __FUNCTION__);
+                LOG_DBG("lock primary surface, lpDDSurfaceDesk: 0x%p", &DDS_desc);
 				v8 = lpDDSPrimary->Lock(NULL, &DDS_desc, DDLOCK_WRITEONLY|DDLOCK_WAIT, NULL);
 				if ( !v8 )
 					break;
